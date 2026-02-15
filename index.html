@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hide & Seek: Wilderness Prototype</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-900 text-white min-h-screen p-2">
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+
+    function HideAndSeekGame() {
+      // Game balance constants
+      const TURN_COST_TAP = -1;           // Base cost for tapping any tile
+      const TURN_BONUS_COIN = 1;          // Coin bonus (net 0 with tap)
+      const TURN_PENALTY_TRAP = -1;       // Trap penalty (net -2 with tap)
+      const TURN_PENALTY_EMPTY = 0;       // Empty has no extra penalty (net -1 with tap)
+      const GRID_SIZE = 10;
+      const GRID_CENTER_ROW = 5;
+      const GRID_CENTER_COL = 5;
+      
+      const [settings, setSettings] = useState({
+        startingTurns: 15,
+        trapCount: 10,
+        coinCount: 10,
+        compassCount: 5
+      });
+      const [showSettings, setShowSettings] = useState(false);
+      const [board, setBoard] = useState(null);
+      const [turns, setTurns] = useState(settings.startingTurns);
+      const [gameStatus, setGameStatus] = useState('playing'); // playing, won, lost
+      const [lastClickedPos, setLastClickedPos] = useState(null);
+      const [friendPos, setFriendPos] = useState(null);
+      const [feedback, setFeedback] = useState(null);
+      const [revealedTiles, setRevealedTiles] = useState(new Set());
+
+      // Generate board
+      const generateBoard = () => {
+        const newBoard = [];
+        const terrainTypes = ['grass', 'trees', 'rocks', 'pond'];
+        const terrainWeights = [60, 20, 15, 5]; // Percentage weights
+        
+        // Initialize grid
+        for (let row = 0; row < 10; row++) {
+          const boardRow = [];
+          for (let col = 0; col < 10; col++) {
+            // Random terrain based on weights
+            const rand = Math.random() * 100;
+            let terrain = 'grass';
+            let cumulative = 0;
+            for (let i = 0; i < terrainTypes.length; i++) {
+              cumulative += terrainWeights[i];
+              if (rand < cumulative) {
+                terrain = terrainTypes[i];
+                break;
+              }
+            }
+            
+            boardRow.push({
+              row,
+              col,
+              terrain,
+              content: 'empty'
+            });
+          }
+          newBoard.push(boardRow);
+        }
+        
+        // Place hidden content
+        const availablePositions = [];
+        for (let row = 0; row < 10; row++) {
+          for (let col = 0; col < 10; col++) {
+            availablePositions.push({ row, col });
+          }
+        }
+        
+        // Shuffle positions
+        for (let i = availablePositions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [availablePositions[i], availablePositions[j]] = [availablePositions[j], availablePositions[i]];
+        }
+        
+        // Place 1 friend
+        const friendPosition = availablePositions[0];
+        newBoard[friendPosition.row][friendPosition.col].content = 'friend';
+        setFriendPos(friendPosition);
+        
+        // Place coins
+        for (let i = 1; i <= settings.coinCount && i < availablePositions.length; i++) {
+          const pos = availablePositions[i];
+          newBoard[pos.row][pos.col].content = 'coin';
+        }
+        
+        // Place traps
+        const trapEnd = settings.coinCount + settings.trapCount;
+        for (let i = settings.coinCount + 1; i <= trapEnd && i < availablePositions.length; i++) {
+          const pos = availablePositions[i];
+          newBoard[pos.row][pos.col].content = 'trap';
+        }
+        
+        // Place compasses
+        const compassEnd = settings.coinCount + settings.trapCount + settings.compassCount;
+        for (let i = settings.coinCount + settings.trapCount + 1; i <= compassEnd && i < availablePositions.length; i++) {
+          const pos = availablePositions[i];
+          newBoard[pos.row][pos.col].content = 'compass';
+        }
+        
+        return newBoard;
+      };
+
+      // Calculate compass direction
+      const getCompassDirection = () => {
+        if (!friendPos) return 'N';
+        
+        const referencePos = lastClickedPos || { row: GRID_CENTER_ROW, col: GRID_CENTER_COL };
+        
+        const deltaRow = friendPos.row - referencePos.row;
+        const deltaCol = friendPos.col - referencePos.col;
+        
+        // Calculate angle (atan2 takes y, x parameters)
+        const angle = Math.atan2(deltaRow, deltaCol) * (180 / Math.PI);
+        
+        // Map angle to 8 directions
+        // 0° = E, 90° = S, 180° = W, -90° = N
+        if (angle >= -22.5 && angle < 22.5) return 'E';
+        if (angle >= 22.5 && angle < 67.5) return 'SE';
+        if (angle >= 67.5 && angle < 112.5) return 'S';
+        if (angle >= 112.5 && angle < 157.5) return 'SW';
+        if (angle >= 157.5 || angle < -157.5) return 'W';
+        if (angle >= -157.5 && angle < -112.5) return 'NW';
+        if (angle >= -112.5 && angle < -67.5) return 'N';
+        if (angle >= -67.5 && angle < -22.5) return 'NE';
+        
+        return 'N';
+      };
+
+      // Get directional arrow from a specific position to the friend
+      const getDirectionalArrow = (fromRow, fromCol) => {
+        if (!friendPos) return '•';  // Neutral indicator if friend position unknown
+        
+        const deltaRow = friendPos.row - fromRow;
+        const deltaCol = friendPos.col - fromCol;
+        
+        // Calculate angle (atan2 takes y, x parameters)
+        const angle = Math.atan2(deltaRow, deltaCol) * (180 / Math.PI);
+        
+        // Map angle to 8 directional arrows
+        // 0° = E, 90° = S, 180° = W, -90° = N
+        if (angle >= -22.5 && angle < 22.5) return '→';  // E
+        if (angle >= 22.5 && angle < 67.5) return '↘';   // SE
+        if (angle >= 67.5 && angle < 112.5) return '↓';  // S
+        if (angle >= 112.5 && angle < 157.5) return '↙'; // SW
+        if (Math.abs(angle) >= 157.5) return '←';        // W
+        if (angle >= -157.5 && angle < -112.5) return '↖'; // NW
+        if (angle >= -112.5 && angle < -67.5) return '↑'; // N
+        if (angle >= -67.5 && angle < -22.5) return '↗';  // NE
+        
+        return '•';  // Fallback
+      };
+
+      // Handle tile click
+      const handleTileClick = (row, col) => {
+        if (gameStatus !== 'playing') return;
+        
+        const tileKey = `${row}-${col}`;
+        if (revealedTiles.has(tileKey)) return; // Already clicked
+        
+        const tile = board[row][col];
+        const newRevealed = new Set(revealedTiles);
+        newRevealed.add(tileKey);
+        setRevealedTiles(newRevealed);
+        
+        setLastClickedPos({ row, col });
+        
+        let turnChange = TURN_COST_TAP;  // Base tap cost applies to all tiles
+        let message = '';
+        let feedbackColor = '';
+        
+        if (tile.content === 'friend') {
+          setGameStatus('won');
+          message = 'You found the Friend! 🎉';
+          feedbackColor = 'text-green-400';
+        } else if (tile.content === 'coin') {
+          turnChange += TURN_BONUS_COIN;  // -1 tap + 1 coin = 0 net
+          message = `Coin! (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
+          feedbackColor = 'text-yellow-400';
+        } else if (tile.content === 'trap') {
+          turnChange += TURN_PENALTY_TRAP;  // -1 tap + -1 trap = -2 net
+          message = `Trap! (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
+          feedbackColor = 'text-red-400';
+        } else if (tile.content === 'compass') {
+          // Compass: -1 tap cost, gives directional hint (shown in grid, not in HUD)
+          // No feedback message to avoid HUD clutter
+        } else {
+          turnChange += TURN_PENALTY_EMPTY;  // -1 tap + 0 empty = -1 net
+          message = `Empty (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
+          feedbackColor = 'text-gray-400';
+        }
+        
+        const newTurns = turns + turnChange;
+        setTurns(newTurns);
+        
+        if (tile.content !== 'friend' && newTurns <= 0) {
+          setGameStatus('lost');
+        }
+        
+        // Only show feedback if there's a message
+        if (message) {
+          setFeedback({ message, color: feedbackColor });
+          setTimeout(() => setFeedback(null), 2000);
+        }
+      };
+
+      // Get terrain emoji
+      const getTerrainEmoji = (terrain) => {
+        const emojis = {
+          grass: '🌿',
+          trees: '🌲',
+          rocks: '🪨',
+          pond: '💧'
+        };
+        return emojis[terrain] || '🌿';
+      };
+
+      // Get content emoji
+      const getContentEmoji = (content, row, col) => {
+        // Compass is handled separately to show directional arrow
+        if (content === 'compass') {
+          return getDirectionalArrow(row, col);
+        }
+        
+        const emojis = {
+          friend: '🕵️‍♀️',
+          coin: '💰',
+          trap: '🕸️',
+          empty: '❌'
+        };
+        return emojis[content] || '';
+      };
+
+      // Reset game
+      const resetGame = () => {
+        const newBoard = generateBoard();
+        setBoard(newBoard);
+        setTurns(settings.startingTurns);
+        setGameStatus('playing');
+        setLastClickedPos(null);
+        setRevealedTiles(new Set());
+        setFeedback(null);
+      };
+
+      // Initialize game on mount
+      useEffect(() => {
+        resetGame();
+      }, []);
+
+      // Update game when settings change
+      const applySettings = () => {
+        setShowSettings(false);
+        resetGame();
+      };
+
+      if (!board) return <div className="text-center mt-10">Loading...</div>;
+
+      return (
+        <div className="max-w-lg mx-auto">
+          {/* Header */}
+          <div className="text-center mb-4">
+            <h1 className="text-3xl font-bold mb-2">🌲 Hide & Seek 🌲</h1>
+            <p className="text-sm text-green-200">Find your friend in the wilderness!</p>
+          </div>
+
+          {/* HUD */}
+          <div className="bg-green-800 rounded-lg p-4 mb-4 shadow-lg">
+            <div className="flex justify-between items-center mb-2">
+              <div className="text-xl font-bold">
+                Turns: <span className={turns <= 3 ? 'text-red-400' : 'text-white'}>{turns}</span>
+              </div>
+            </div>
+            {/* Fixed height feedback area to prevent layout shift */}
+            <div className="text-center text-lg font-bold min-h-[28px]">
+              {feedback && (
+                <div className={`${feedback.color} animate-pulse`}>
+                  {feedback.message}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Game Status */}
+          {gameStatus === 'won' && (
+            <div className="bg-green-600 rounded-lg p-4 mb-4 text-center">
+              <p className="text-2xl font-bold mb-2">🎉 Victory! 🎉</p>
+              <p>You found your friend with {turns} turns remaining!</p>
+              <button 
+                onClick={resetGame}
+                className="mt-2 bg-green-800 hover:bg-green-700 px-6 py-2 rounded-lg font-bold"
+              >
+                Play Again
+              </button>
+            </div>
+          )}
+
+          {gameStatus === 'lost' && (
+            <div className="bg-red-800 rounded-lg p-4 mb-4 text-center">
+              <p className="text-2xl font-bold mb-2">💔 Game Over 💔</p>
+              <p>You ran out of turns!</p>
+              <button 
+                onClick={resetGame}
+                className="mt-2 bg-green-800 hover:bg-green-700 px-6 py-2 rounded-lg font-bold"
+              >
+                Try Again
+              </button>
+            </div>
+          )}
+
+          {/* Grid */}
+          <div className="bg-green-800 rounded-lg p-2 mb-4 shadow-lg">
+            <div className="grid grid-cols-10 gap-1">
+              {board.map((row, rowIdx) => 
+                row.map((tile, colIdx) => {
+                  const tileKey = `${rowIdx}-${colIdx}`;
+                  const isRevealed = revealedTiles.has(tileKey);
+                  const isLastClicked = lastClickedPos && lastClickedPos.row === rowIdx && lastClickedPos.col === colIdx;
+                  
+                  return (
+                    <button
+                      key={tileKey}
+                      onClick={() => handleTileClick(rowIdx, colIdx)}
+                      disabled={isRevealed || gameStatus !== 'playing'}
+                      className={`
+                        h-10 w-10 rounded flex items-center justify-center text-xl
+                        transition-all duration-200
+                        ${isRevealed 
+                          ? 'bg-green-700 cursor-not-allowed opacity-70' 
+                          : 'bg-green-600 hover:bg-green-500 active:scale-95'
+                        }
+                        ${isLastClicked ? 'ring-2 ring-yellow-400' : ''}
+                        ${gameStatus !== 'playing' ? 'cursor-not-allowed' : ''}
+                      `}
+                    >
+                      {isRevealed ? getContentEmoji(tile.content, rowIdx, colIdx) : getTerrainEmoji(tile.terrain)}
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Settings Toggle */}
+          <div className="bg-green-800 rounded-lg p-4 shadow-lg">
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              className="w-full text-left font-bold flex justify-between items-center"
+            >
+              <span>⚙️ Settings / Debug</span>
+              <span>{showSettings ? '▼' : '▶'}</span>
+            </button>
+            
+            {showSettings && (
+              <div className="mt-4 space-y-3">
+                <div>
+                  <label className="block text-sm mb-1">Starting Turns: {settings.startingTurns}</label>
+                  <input
+                    type="range"
+                    min="5"
+                    max="30"
+                    value={settings.startingTurns}
+                    onChange={(e) => setSettings({...settings, startingTurns: parseInt(e.target.value)})}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm mb-1">Trap Count: {settings.trapCount}</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="20"
+                    value={settings.trapCount}
+                    onChange={(e) => setSettings({...settings, trapCount: parseInt(e.target.value)})}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm mb-1">Coin Count: {settings.coinCount}</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="20"
+                    value={settings.coinCount}
+                    onChange={(e) => setSettings({...settings, coinCount: parseInt(e.target.value)})}
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm mb-1">Compass Count: {settings.compassCount}</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="15"
+                    value={settings.compassCount}
+                    onChange={(e) => setSettings({...settings, compassCount: parseInt(e.target.value)})}
+                    className="w-full"
+                  />
+                </div>
+                
+                <button
+                  onClick={applySettings}
+                  className="w-full bg-green-600 hover:bg-green-500 py-2 rounded font-bold"
+                >
+                  Apply & Reset Game
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Instructions */}
+          <div className="mt-4 text-center text-xs text-green-300">
+            <p>Tap tiles to search for your friend 🕵️‍♀️</p>
+            <p>All taps cost 1 turn • Coins 💰: 0 net • Traps 🕸️: -2 • Compass 🧭: -1 + hint</p>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<HideAndSeekGame />);
+  </script>
+</body>
+</html>
