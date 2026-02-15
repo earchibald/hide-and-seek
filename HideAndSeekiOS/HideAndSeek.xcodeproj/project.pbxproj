@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A12F38A2F42804B007A0625 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A12F3892F42804B007A0625 /* SoundManager.swift */; };
 		0A12F38D2F428058007A0625 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A12F38B2F428058007A0625 /* SoundManager.swift */; };
 		AA0001 /* HideAndSeekApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0001 /* HideAndSeekApp.swift */; };
 		AA0002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0002 /* ContentView.swift */; };
@@ -18,7 +17,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0A12F3892F42804B007A0625 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		0A12F38B2F428058007A0625 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		BB0001 /* HideAndSeekApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideAndSeekApp.swift; sourceTree = "<group>"; };
 		BB0002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -60,7 +58,6 @@
 			isa = PBXGroup;
 			children = (
 				0A12F38C2F428058007A0625 /* Managers */,
-				0A12F3892F42804B007A0625 /* SoundManager.swift */,
 				BB0001 /* HideAndSeekApp.swift */,
 				EE0004 /* Models */,
 				EE0005 /* ViewModels */,
@@ -178,7 +175,6 @@
 				AA0004 /* GameSettings.swift in Sources */,
 				AA0005 /* GameViewModel.swift in Sources */,
 				0A12F38D2F428058007A0625 /* SoundManager.swift in Sources */,
-				0A12F38A2F42804B007A0625 /* SoundManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +307,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = LMMVWL22J9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -339,6 +336,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = LMMVWL22J9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

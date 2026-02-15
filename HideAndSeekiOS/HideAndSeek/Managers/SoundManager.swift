@@ -27,41 +27,46 @@ class SoundManager {
     func play(for contentType: ContentType, soundEnabled: Bool) {
         guard soundEnabled else { return }
 
+        // Play sound on background queue to avoid blocking UI
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            switch contentType {
+            case .empty:
+                AudioServicesPlaySystemSound(1103)
+
+            case .trap:
+                AudioServicesPlaySystemSound(1053)
+
+            case .coin:
+                AudioServicesPlaySystemSound(1013)
+
+            case .friend:
+                AudioServicesPlaySystemSound(1111)
+
+            case .compass:
+                AudioServicesPlaySystemSound(1057)
+            }
+        }
+
+        // Play haptics on main queue (required for haptics)
+        playHaptic(for: contentType)
+    }
+
+    private func playHaptic(for contentType: ContentType) {
         switch contentType {
         case .empty:
-            playSound(named: "shovel", systemSoundID: 1104)
             lightImpact.impactOccurred()
 
         case .trap:
-            playSound(named: "buzzer", systemSoundID: 1053)
             notificationFeedback.notificationOccurred(.error)
 
         case .coin:
-            playSound(named: "coins", systemSoundID: 1102)
             mediumImpact.impactOccurred()
 
         case .friend:
-            playSound(named: "victory", systemSoundID: 1111)
             notificationFeedback.notificationOccurred(.success)
 
         case .compass:
-            playSound(named: "compass", systemSoundID: 1057)
             lightImpact.impactOccurred()
         }
-    }
-
-    /// Play custom sound file if available, otherwise fall back to system sound
-    private func playSound(named soundName: String, systemSoundID: SystemSoundID) {
-        // Try to play custom sound file first
-        if let url = Bundle.main.url(forResource: soundName, withExtension: "mp3") ??
-                     Bundle.main.url(forResource: soundName, withExtension: "caf") {
-            var soundID: SystemSoundID = 0
-            AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
-            AudioServicesPlaySystemSound(soundID)
-            return
-        }
-
-        // Fall back to system sound
-        AudioServicesPlaySystemSound(systemSoundID)
     }
 }
