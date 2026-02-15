@@ -140,6 +140,30 @@
         return 'N';
       };
 
+      // Get directional arrow from a specific position to the friend
+      const getDirectionalArrow = (fromRow, fromCol) => {
+        if (!friendPos) return '→';
+        
+        const deltaRow = friendPos.row - fromRow;
+        const deltaCol = friendPos.col - fromCol;
+        
+        // Calculate angle (atan2 takes y, x parameters)
+        const angle = Math.atan2(deltaRow, deltaCol) * (180 / Math.PI);
+        
+        // Map angle to 8 directional arrows
+        // 0° = E, 90° = S, 180° = W, -90° = N
+        if (angle >= -22.5 && angle < 22.5) return '→';  // E
+        if (angle >= 22.5 && angle < 67.5) return '↘';   // SE
+        if (angle >= 67.5 && angle < 112.5) return '↓';  // S
+        if (angle >= 112.5 && angle < 157.5) return '↙'; // SW
+        if (angle >= 157.5 || angle < -157.5) return '←'; // W
+        if (angle >= -157.5 && angle < -112.5) return '↖'; // NW
+        if (angle >= -112.5 && angle < -67.5) return '↑'; // N
+        if (angle >= -67.5 && angle < -22.5) return '↗';  // NE
+        
+        return '→';
+      };
+
       // Handle tile click
       const handleTileClick = (row, col) => {
         if (gameStatus !== 'playing') return;
@@ -171,9 +195,8 @@
           message = `Trap! (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
           feedbackColor = 'text-red-400';
         } else if (tile.content === 'compass') {
-          // Compass: -1 tap cost, gives directional hint
-          message = `Compass Found! (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
-          feedbackColor = 'text-blue-400';
+          // Compass: -1 tap cost, gives directional hint (shown in grid, not in HUD)
+          // No feedback message to avoid HUD clutter
         } else {
           turnChange += TURN_PENALTY_EMPTY;  // -1 tap + 0 empty = -1 net
           message = `Empty (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
@@ -187,8 +210,11 @@
           setGameStatus('lost');
         }
         
-        setFeedback({ message, color: feedbackColor });
-        setTimeout(() => setFeedback(null), 2000);
+        // Only show feedback if there's a message
+        if (message) {
+          setFeedback({ message, color: feedbackColor });
+          setTimeout(() => setFeedback(null), 2000);
+        }
       };
 
       // Get terrain emoji
@@ -203,12 +229,16 @@
       };
 
       // Get content emoji
-      const getContentEmoji = (content) => {
+      const getContentEmoji = (content, row, col) => {
+        if (content === 'compass') {
+          // Show directional arrow pointing to friend
+          return getDirectionalArrow(row, col);
+        }
+        
         const emojis = {
           friend: '🕵️‍♀️',
           coin: '💰',
           trap: '🕸️',
-          compass: '🧭',
           empty: '❌'
         };
         return emojis[content] || '';
@@ -258,11 +288,14 @@
                 🧭 {compassDirection}
               </div>
             </div>
-            {feedback && (
-              <div className={`text-center text-lg font-bold ${feedback.color} animate-pulse`}>
-                {feedback.message}
-              </div>
-            )}
+            {/* Fixed height feedback area to prevent layout shift */}
+            <div className="text-center text-lg font-bold min-h-[28px]">
+              {feedback && (
+                <div className={`${feedback.color} animate-pulse`}>
+                  {feedback.message}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Game Status */}
@@ -317,7 +350,7 @@
                         ${gameStatus !== 'playing' ? 'cursor-not-allowed' : ''}
                       `}
                     >
-                      {isRevealed ? getContentEmoji(tile.content) : getTerrainEmoji(tile.terrain)}
+                      {isRevealed ? getContentEmoji(tile.content, rowIdx, colIdx) : getTerrainEmoji(tile.terrain)}
                     </button>
                   );
                 })
