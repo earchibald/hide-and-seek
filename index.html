@@ -13,13 +13,16 @@
   <div id="root"></div>
   
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useCallback } = React;
 
     function HideAndSeekGame() {
       // Game balance constants
       const TURN_BONUS_COIN = 1;
       const TURN_PENALTY_TRAP = -1;
       const TURN_PENALTY_EMPTY = -2;
+      const GRID_SIZE = 10;
+      const GRID_CENTER_ROW = 5;
+      const GRID_CENTER_COL = 5;
       
       const [settings, setSettings] = useState({
         startingTurns: 15,
@@ -105,7 +108,7 @@
       const getCompassDirection = () => {
         if (!friendPos) return 'N';
         
-        const referencePos = lastClickedPos || { row: 5, col: 5 }; // Center if no clicks
+        const referencePos = lastClickedPos || { row: GRID_CENTER_ROW, col: GRID_CENTER_COL };
         
         const deltaRow = friendPos.row - referencePos.row;
         const deltaCol = friendPos.col - referencePos.col;
@@ -207,7 +210,7 @@
         setFeedback(null);
       };
 
-      // Initialize game
+      // Initialize game on mount
       useEffect(() => {
         resetGame();
       }, []);
