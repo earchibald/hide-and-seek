@@ -17,9 +17,10 @@
 
     function HideAndSeekGame() {
       // Game balance constants
-      const TURN_BONUS_COIN = 1;
-      const TURN_PENALTY_TRAP = -1;
-      const TURN_PENALTY_EMPTY = -2;
+      const TURN_COST_TAP = -1;           // Base cost for tapping any tile
+      const TURN_BONUS_COIN = 1;          // Coin bonus (net 0 with tap)
+      const TURN_PENALTY_TRAP = -1;       // Trap penalty (net -2 with tap)
+      const TURN_PENALTY_EMPTY = 0;       // Empty has no extra penalty (net -1 with tap)
       const GRID_SIZE = 10;
       const GRID_CENTER_ROW = 5;
       const GRID_CENTER_COL = 5;
@@ -27,7 +28,8 @@
       const [settings, setSettings] = useState({
         startingTurns: 15,
         trapCount: 10,
-        coinCount: 10
+        coinCount: 10,
+        compassCount: 5
       });
       const [showSettings, setShowSettings] = useState(false);
       const [board, setBoard] = useState(null);
@@ -101,6 +103,12 @@
           newBoard[pos.row][pos.col].content = 'trap';
         }
         
+        // Place compasses
+        for (let i = settings.coinCount + settings.trapCount + 1; i <= settings.coinCount + settings.trapCount + settings.compassCount; i++) {
+          const pos = availablePositions[i];
+          newBoard[pos.row][pos.col].content = 'compass';
+        }
+        
         return newBoard;
       };
 
@@ -144,7 +152,7 @@
         
         setLastClickedPos({ row, col });
         
-        let turnChange = 0;
+        let turnChange = TURN_COST_TAP;  // Base tap cost applies to all tiles
         let message = '';
         let feedbackColor = '';
         
@@ -153,16 +161,20 @@
           message = 'You found the Friend! 🎉';
           feedbackColor = 'text-green-400';
         } else if (tile.content === 'coin') {
-          turnChange = TURN_BONUS_COIN;
-          message = `+${TURN_BONUS_COIN} Turn 🪙`;
+          turnChange += TURN_BONUS_COIN;  // -1 tap + 1 coin = 0 net
+          message = `Coin! (${turnChange >= 0 ? '+' : ''}${turnChange} Turn)`;
           feedbackColor = 'text-yellow-400';
         } else if (tile.content === 'trap') {
-          turnChange = TURN_PENALTY_TRAP;
-          message = `${TURN_PENALTY_TRAP} Turn 🕸️`;
+          turnChange += TURN_PENALTY_TRAP;  // -1 tap + -1 trap = -2 net
+          message = `Trap! (${turnChange} Turns)`;
           feedbackColor = 'text-red-400';
+        } else if (tile.content === 'compass') {
+          // Compass: -1 tap cost, gives directional hint
+          message = `Compass Found! (${turnChange} Turn)`;
+          feedbackColor = 'text-blue-400';
         } else {
-          turnChange = TURN_PENALTY_EMPTY;
-          message = `${TURN_PENALTY_EMPTY} Turns (Empty)`;
+          turnChange += TURN_PENALTY_EMPTY;  // -1 tap + 0 empty = -1 net
+          message = `Empty (${turnChange} Turn)`;
           feedbackColor = 'text-gray-400';
         }
         
@@ -192,8 +204,9 @@
       const getContentEmoji = (content) => {
         const emojis = {
           friend: '🕵️‍♀️',
-          coin: '🪙',
+          coin: '💰',
           trap: '🕸️',
+          compass: '🧭',
           empty: '❌'
         };
         return emojis[content] || '';
@@ -358,6 +371,18 @@
                   />
                 </div>
                 
+                <div>
+                  <label className="block text-sm mb-1">Compass Count: {settings.compassCount}</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="15"
+                    value={settings.compassCount}
+                    onChange={(e) => setSettings({...settings, compassCount: parseInt(e.target.value)})}
+                    className="w-full"
+                  />
+                </div>
+                
                 <button
                   onClick={applySettings}
                   className="w-full bg-green-600 hover:bg-green-500 py-2 rounded font-bold"
@@ -371,7 +396,7 @@
           {/* Instructions */}
           <div className="mt-4 text-center text-xs text-green-300">
             <p>Tap tiles to search for your friend 🕵️‍♀️</p>
-            <p>Follow the compass 🧭 • Avoid traps 🕸️ • Collect coins 🪙</p>
+            <p>All taps cost 1 turn • Coins 💰: 0 net • Traps 🕸️: -2 • Compass 🧭: -1 + hint</p>
           </div>
         </div>
       );
