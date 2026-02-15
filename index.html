@@ -92,19 +92,21 @@
         setFriendPos(friendPosition);
         
         // Place coins
-        for (let i = 1; i <= settings.coinCount; i++) {
+        for (let i = 1; i <= settings.coinCount && i < availablePositions.length; i++) {
           const pos = availablePositions[i];
           newBoard[pos.row][pos.col].content = 'coin';
         }
         
         // Place traps
-        for (let i = settings.coinCount + 1; i <= settings.coinCount + settings.trapCount; i++) {
+        const trapEnd = settings.coinCount + settings.trapCount;
+        for (let i = settings.coinCount + 1; i <= trapEnd && i < availablePositions.length; i++) {
           const pos = availablePositions[i];
           newBoard[pos.row][pos.col].content = 'trap';
         }
         
         // Place compasses
-        for (let i = settings.coinCount + settings.trapCount + 1; i <= settings.coinCount + settings.trapCount + settings.compassCount; i++) {
+        const compassEnd = settings.coinCount + settings.trapCount + settings.compassCount;
+        for (let i = settings.coinCount + settings.trapCount + 1; i <= compassEnd && i < availablePositions.length; i++) {
           const pos = availablePositions[i];
           newBoard[pos.row][pos.col].content = 'compass';
         }
@@ -162,7 +164,7 @@
           feedbackColor = 'text-green-400';
         } else if (tile.content === 'coin') {
           turnChange += TURN_BONUS_COIN;  // -1 tap + 1 coin = 0 net
-          message = `Coin! (${turnChange >= 0 ? '+' : ''}${turnChange} Turn)`;
+          message = `Coin! (0 Turns)`;
           feedbackColor = 'text-yellow-400';
         } else if (tile.content === 'trap') {
           turnChange += TURN_PENALTY_TRAP;  // -1 tap + -1 trap = -2 net
