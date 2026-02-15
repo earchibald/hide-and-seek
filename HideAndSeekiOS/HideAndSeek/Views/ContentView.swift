@@ -231,7 +231,7 @@ struct SettingsSheetView: View {
                             set: { viewModel.settings.startingTurns = Int($0) }
                         ), in: 5...30, step: 1)
                     }
-                    
+
                     VStack(alignment: .leading) {
                         Text("Trap Count: \(viewModel.settings.trapCount)")
                         Slider(value: Binding(
@@ -239,7 +239,7 @@ struct SettingsSheetView: View {
                             set: { viewModel.settings.trapCount = Int($0) }
                         ), in: 0...20, step: 1)
                     }
-                    
+
                     VStack(alignment: .leading) {
                         Text("Coin Count: \(viewModel.settings.coinCount)")
                         Slider(value: Binding(
@@ -247,7 +247,7 @@ struct SettingsSheetView: View {
                             set: { viewModel.settings.coinCount = Int($0) }
                         ), in: 0...20, step: 1)
                     }
-                    
+
                     VStack(alignment: .leading) {
                         Text("Compass Count: \(viewModel.settings.compassCount)")
                         Slider(value: Binding(
@@ -256,7 +256,14 @@ struct SettingsSheetView: View {
                         ), in: 0...15, step: 1)
                     }
                 }
-                
+
+                Section(header: Text("Audio")) {
+                    Toggle("Sound Effects", isOn: Binding(
+                        get: { viewModel.settings.soundEnabled },
+                        set: { viewModel.settings.soundEnabled = $0 }
+                    ))
+                }
+
                 Section {
                     Button("Apply & Reset Game") {
                         viewModel.applySettings()

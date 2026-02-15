@@ -109,46 +109,49 @@ class GameViewModel: ObservableObject {
     func handleTileClick(row: Int, col: Int) {
         guard gameStatus == .playing else { return }
         guard !board[row][col].isRevealed else { return }
-        
+
         board[row][col].isRevealed = true
         let tile = board[row][col]
-        
+
+        // Play sound and haptic feedback
+        SoundManager.shared.play(for: tile.content, soundEnabled: settings.soundEnabled)
+
         var turnChange = TURN_COST_TAP
         var message = ""
         var feedbackColor = Color.gray
-        
+
         switch tile.content {
         case .friend:
             gameStatus = .won
             message = "You found the Friend! 🎉"
             feedbackColor = .green
-            
+
         case .coin:
             turnChange += TURN_BONUS_COIN
             message = "Coin! (\(turnChange) Turn\(abs(turnChange) != 1 ? "s" : ""))"
             feedbackColor = .yellow
-            
+
         case .trap:
             turnChange += TURN_PENALTY_TRAP
             message = "Trap! (\(turnChange) Turn\(abs(turnChange) != 1 ? "s" : ""))"
             feedbackColor = .red
-            
+
         case .compass:
             // No feedback message for compass
             break
-            
+
         case .empty:
             turnChange += TURN_PENALTY_EMPTY
             message = "Empty (\(turnChange) Turn\(abs(turnChange) != 1 ? "s" : ""))"
             feedbackColor = .gray
         }
-        
+
         turns += turnChange
-        
+
         if tile.content != .friend && turns <= 0 {
             gameStatus = .lost
         }
-        
+
         if !message.isEmpty {
             feedback = FeedbackMessage(message: message, color: feedbackColor)
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

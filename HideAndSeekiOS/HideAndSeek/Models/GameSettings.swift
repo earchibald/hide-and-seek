@@ -12,4 +12,5 @@ struct GameSettings {
     var trapCount: Int = 10
     var coinCount: Int = 10
     var compassCount: Int = 5
+    var soundEnabled: Bool = true
 }

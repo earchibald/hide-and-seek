@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A12F38A2F42804B007A0625 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A12F3892F42804B007A0625 /* SoundManager.swift */; };
+		0A12F38D2F428058007A0625 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A12F38B2F428058007A0625 /* SoundManager.swift */; };
 		AA0001 /* HideAndSeekApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0001 /* HideAndSeekApp.swift */; };
 		AA0002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0002 /* ContentView.swift */; };
 		AA0003 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0003 /* Tile.swift */; };
@@ -16,13 +18,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CC0001 /* HideAndSeek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HideAndSeek.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A12F3892F42804B007A0625 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
+		0A12F38B2F428058007A0625 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		BB0001 /* HideAndSeekApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideAndSeekApp.swift; sourceTree = "<group>"; };
 		BB0002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB0003 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		BB0004 /* GameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettings.swift; sourceTree = "<group>"; };
 		BB0005 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		BB0006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CC0001 /* HideAndSeek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HideAndSeek.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +40,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A12F38C2F428058007A0625 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				0A12F38B2F428058007A0625 /* SoundManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		EE0001 = {
 			isa = PBXGroup;
 			children = (
@@ -47,6 +59,8 @@
 		EE0002 /* HideAndSeek */ = {
 			isa = PBXGroup;
 			children = (
+				0A12F38C2F428058007A0625 /* Managers */,
+				0A12F3892F42804B007A0625 /* SoundManager.swift */,
 				BB0001 /* HideAndSeekApp.swift */,
 				EE0004 /* Models */,
 				EE0005 /* ViewModels */,
@@ -163,6 +177,8 @@
 				AA0003 /* Tile.swift in Sources */,
 				AA0004 /* GameSettings.swift in Sources */,
 				AA0005 /* GameViewModel.swift in Sources */,
+				0A12F38D2F428058007A0625 /* SoundManager.swift in Sources */,
+				0A12F38A2F42804B007A0625 /* SoundManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,7 +313,6 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = HideAndSeek/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -326,7 +341,6 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = HideAndSeek/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -348,20 +362,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		GG0002 /* Build configuration list for PBXProject "HideAndSeek" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				HH0001 /* Debug */,
-				HH0002 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		FF0002 /* Build configuration list for PBXNativeTarget "HideAndSeek" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				HH0003 /* Debug */,
 				HH0004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		GG0002 /* Build configuration list for PBXProject "HideAndSeek" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				HH0001 /* Debug */,
+				HH0002 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
