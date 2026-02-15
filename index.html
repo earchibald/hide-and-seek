@@ -164,19 +164,19 @@
           feedbackColor = 'text-green-400';
         } else if (tile.content === 'coin') {
           turnChange += TURN_BONUS_COIN;  // -1 tap + 1 coin = 0 net
-          message = `Coin! (0 Turns)`;
+          message = `Coin! (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
           feedbackColor = 'text-yellow-400';
         } else if (tile.content === 'trap') {
           turnChange += TURN_PENALTY_TRAP;  // -1 tap + -1 trap = -2 net
-          message = `Trap! (${turnChange} Turns)`;
+          message = `Trap! (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
           feedbackColor = 'text-red-400';
         } else if (tile.content === 'compass') {
           // Compass: -1 tap cost, gives directional hint
-          message = `Compass Found! (${turnChange} Turn)`;
+          message = `Compass Found! (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
           feedbackColor = 'text-blue-400';
         } else {
           turnChange += TURN_PENALTY_EMPTY;  // -1 tap + 0 empty = -1 net
-          message = `Empty (${turnChange} Turn)`;
+          message = `Empty (${turnChange} Turn${Math.abs(turnChange) !== 1 ? 's' : ''})`;
           feedbackColor = 'text-gray-400';
         }
         
@@ -398,7 +398,7 @@
           {/* Instructions */}
           <div className="mt-4 text-center text-xs text-green-300">
             <p>Tap tiles to search for your friend 🕵️‍♀️</p>
-            <p>All taps cost 1 turn • Coins 💰: 0 net • Traps 🕸️: -2 • Compass 🧭: -1 + hint</p>
+            <p>All taps cost 1 turn • Coins 💰: 0 net • Traps 🕸️: -2 • compass 🧭: -1 + hint</p>
           </div>
         </div>
       );
