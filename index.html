@@ -16,6 +16,11 @@
     const { useState, useEffect } = React;
 
     function HideAndSeekGame() {
+      // Game balance constants
+      const TURN_BONUS_COIN = 1;
+      const TURN_PENALTY_TRAP = -1;
+      const TURN_PENALTY_EMPTY = -2;
+      
       const [settings, setSettings] = useState({
         startingTurns: 15,
         trapCount: 10,
@@ -105,18 +110,19 @@
         const deltaRow = friendPos.row - referencePos.row;
         const deltaCol = friendPos.col - referencePos.col;
         
-        // Calculate angle
-        const angle = Math.atan2(deltaCol, deltaRow) * (180 / Math.PI);
+        // Calculate angle (atan2 takes y, x parameters)
+        const angle = Math.atan2(deltaRow, deltaCol) * (180 / Math.PI);
         
         // Map angle to 8 directions
-        if (angle >= -22.5 && angle < 22.5) return 'S';
+        // 0° = E, 90° = S, 180° = W, -90° = N
+        if (angle >= -22.5 && angle < 22.5) return 'E';
         if (angle >= 22.5 && angle < 67.5) return 'SE';
-        if (angle >= 67.5 && angle < 112.5) return 'E';
-        if (angle >= 112.5 && angle < 157.5) return 'NE';
-        if (angle >= 157.5 || angle < -157.5) return 'N';
+        if (angle >= 67.5 && angle < 112.5) return 'S';
+        if (angle >= 112.5 && angle < 157.5) return 'SW';
+        if (angle >= 157.5 || angle < -157.5) return 'W';
         if (angle >= -157.5 && angle < -112.5) return 'NW';
-        if (angle >= -112.5 && angle < -67.5) return 'W';
-        if (angle >= -67.5 && angle < -22.5) return 'SW';
+        if (angle >= -112.5 && angle < -67.5) return 'N';
+        if (angle >= -67.5 && angle < -22.5) return 'NE';
         
         return 'N';
       };
@@ -144,16 +150,16 @@
           message = 'You found the Friend! 🎉';
           feedbackColor = 'text-green-400';
         } else if (tile.content === 'coin') {
-          turnChange = 1;
-          message = '+1 Turn 🪙';
+          turnChange = TURN_BONUS_COIN;
+          message = `+${TURN_BONUS_COIN} Turn 🪙`;
           feedbackColor = 'text-yellow-400';
         } else if (tile.content === 'trap') {
-          turnChange = -1;
-          message = '-1 Turn 🕸️';
+          turnChange = TURN_PENALTY_TRAP;
+          message = `${TURN_PENALTY_TRAP} Turn 🕸️`;
           feedbackColor = 'text-red-400';
         } else {
-          turnChange = -2;
-          message = '-2 Turns (Empty)';
+          turnChange = TURN_PENALTY_EMPTY;
+          message = `${TURN_PENALTY_EMPTY} Turns (Empty)`;
           feedbackColor = 'text-gray-400';
         }
         
@@ -368,7 +374,8 @@
       );
     }
 
-    ReactDOM.render(<HideAndSeekGame />, document.getElementById('root'));
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<HideAndSeekGame />);
   </script>
 </body>
 </html>
