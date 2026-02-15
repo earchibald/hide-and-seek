@@ -268,8 +268,6 @@
 
       if (!board) return <div className="text-center mt-10">Loading...</div>;
 
-      const compassDirection = getCompassDirection();
-
       return (
         <div className="max-w-lg mx-auto">
           {/* Header */}
@@ -283,9 +281,6 @@
             <div className="flex justify-between items-center mb-2">
               <div className="text-xl font-bold">
                 Turns: <span className={turns <= 3 ? 'text-red-400' : 'text-white'}>{turns}</span>
-              </div>
-              <div className="text-2xl">
-                🧭 {compassDirection}
               </div>
             </div>
             {/* Fixed height feedback area to prevent layout shift */}
