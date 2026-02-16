@@ -13,5 +13,5 @@ struct GameSettings {
     var coinCount: Int = 10
     var compassCount: Int = 5
     var soundEnabled: Bool = true
-    var soundVolume: Float = 2.0  // 1.0 = normal, higher = louder
+    var soundVolume: Float = 1.0  // 1.0 = normal, higher = louder
 }

@@ -133,7 +133,7 @@ struct TileButton: View {
             viewModel.handleTileClick(row: tile.row, col: tile.col)
         }) {
             Text(tile.isRevealed ? tile.contentEmoji(friendPos: viewModel.friendPos) : tile.terrain.rawValue)
-                .font(.system(size: 20))
+                .font(.system(size: 24, weight: .bold))
                 .frame(width: 35, height: 35)
                 .background(tile.isRevealed ? Color(red: 0.2, green: 0.45, blue: 0.2).opacity(0.7) : Color(red: 0.25, green: 0.5, blue: 0.25))
                 .cornerRadius(6)
