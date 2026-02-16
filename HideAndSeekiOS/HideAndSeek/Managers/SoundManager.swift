@@ -16,11 +16,31 @@ class SoundManager {
     private let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
     private let notificationFeedback = UINotificationFeedbackGenerator()
 
+    // Pre-loaded sound IDs
+    private var soundIDs: [String: SystemSoundID] = [:]
+
     private init() {
         // Prepare generators for better performance
         lightImpact.prepare()
         mediumImpact.prepare()
         notificationFeedback.prepare()
+
+        // Pre-load all sound files
+        loadSound(named: "shovel")
+        loadSound(named: "buzzer")
+        loadSound(named: "coins")
+        loadSound(named: "victory")
+        loadSound(named: "compass")
+    }
+
+    private func loadSound(named soundName: String) {
+        guard let url = Bundle.main.url(forResource: soundName, withExtension: "wav") else {
+            return
+        }
+
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        soundIDs[soundName] = soundID
     }
 
     /// Play sound and haptic feedback for a tile content type
@@ -29,21 +49,24 @@ class SoundManager {
 
         // Play sound on background queue to avoid blocking UI
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+
+            let soundName: String
             switch contentType {
             case .empty:
-                AudioServicesPlaySystemSound(1103)
-
+                soundName = "shovel"
             case .trap:
-                AudioServicesPlaySystemSound(1053)
-
+                soundName = "buzzer"
             case .coin:
-                AudioServicesPlaySystemSound(1013)
-
+                soundName = "coins"
             case .friend:
-                AudioServicesPlaySystemSound(1111)
-
+                soundName = "victory"
             case .compass:
-                AudioServicesPlaySystemSound(1057)
+                soundName = "compass"
+            }
+
+            if let soundID = self.soundIDs[soundName] {
+                AudioServicesPlaySystemSound(soundID)
             }
         }
 

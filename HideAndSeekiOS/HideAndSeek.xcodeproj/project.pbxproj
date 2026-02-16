@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		0A12F38D2F428058007A0625 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A12F38B2F428058007A0625 /* SoundManager.swift */; };
+		0A76F2BE2F429AA500F56EC0 /* buzzer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2B82F429AA500F56EC0 /* buzzer.wav */; };
+		0A76F2BF2F429AA500F56EC0 /* victory.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2BC2F429AA500F56EC0 /* victory.wav */; };
+		0A76F2C02F429AA500F56EC0 /* shovel.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2BB2F429AA500F56EC0 /* shovel.wav */; };
+		0A76F2C12F429AA500F56EC0 /* compass.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2BA2F429AA500F56EC0 /* compass.wav */; };
+		0A76F2C22F429AA500F56EC0 /* coins.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2B92F429AA500F56EC0 /* coins.wav */; };
 		AA0001 /* HideAndSeekApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0001 /* HideAndSeekApp.swift */; };
 		AA0002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0002 /* ContentView.swift */; };
 		AA0003 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0003 /* Tile.swift */; };
@@ -18,6 +23,11 @@
 
 /* Begin PBXFileReference section */
 		0A12F38B2F428058007A0625 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
+		0A76F2B82F429AA500F56EC0 /* buzzer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = buzzer.wav; sourceTree = "<group>"; };
+		0A76F2B92F429AA500F56EC0 /* coins.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = coins.wav; sourceTree = "<group>"; };
+		0A76F2BA2F429AA500F56EC0 /* compass.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = compass.wav; sourceTree = "<group>"; };
+		0A76F2BB2F429AA500F56EC0 /* shovel.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shovel.wav; sourceTree = "<group>"; };
+		0A76F2BC2F429AA500F56EC0 /* victory.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = victory.wav; sourceTree = "<group>"; };
 		BB0001 /* HideAndSeekApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideAndSeekApp.swift; sourceTree = "<group>"; };
 		BB0002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB0003 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
@@ -46,6 +56,18 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
+		0A76F2BD2F429AA500F56EC0 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				0A76F2B82F429AA500F56EC0 /* buzzer.wav */,
+				0A76F2B92F429AA500F56EC0 /* coins.wav */,
+				0A76F2BA2F429AA500F56EC0 /* compass.wav */,
+				0A76F2BB2F429AA500F56EC0 /* shovel.wav */,
+				0A76F2BC2F429AA500F56EC0 /* victory.wav */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
 		EE0001 = {
 			isa = PBXGroup;
 			children = (
@@ -63,6 +85,7 @@
 				EE0005 /* ViewModels */,
 				EE0006 /* Views */,
 				BB0006 /* Assets.xcassets */,
+				0A76F2BD2F429AA500F56EC0 /* Sounds */,
 			);
 			path = HideAndSeek;
 			sourceTree = "<group>";
@@ -158,6 +181,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A76F2BE2F429AA500F56EC0 /* buzzer.wav in Resources */,
+				0A76F2BF2F429AA500F56EC0 /* victory.wav in Resources */,
+				0A76F2C02F429AA500F56EC0 /* shovel.wav in Resources */,
+				0A76F2C12F429AA500F56EC0 /* compass.wav in Resources */,
+				0A76F2C22F429AA500F56EC0 /* coins.wav in Resources */,
 				AA0006 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
