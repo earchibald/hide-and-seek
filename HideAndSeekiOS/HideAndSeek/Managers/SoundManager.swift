@@ -39,6 +39,7 @@ class SoundManager {
         loadSound(named: "coins")
         loadSound(named: "victory")
         loadSound(named: "compass")
+        loadSound(named: "failure")
     }
 
     private func loadSound(named soundName: String) {
@@ -106,13 +107,21 @@ class SoundManager {
     }
 
     /// Play game over sound and haptic when player loses
-    func playGameOver(soundEnabled: Bool) {
+    func playGameOver(soundEnabled: Bool, volume: Float = 1.0) {
         guard soundEnabled else { return }
 
-        // Play sad sound (system sound 1006 - low beep)
-        AudioServicesPlaySystemSound(1006)
+        // Play failure sound
+        if let player = audioPlayers["failure"] {
+            player.volume = min(volume, 10.0)
+            player.currentTime = 0
+            player.play()
+        }
 
-        // Play failure haptic
-        notificationFeedback.notificationOccurred(.error)
+        // Play long buzzing haptic (about 1 second)
+        for i in 0..<5 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.2) { [weak self] in
+                self?.notificationFeedback.notificationOccurred(.error)
+            }
+        }
     }
 }

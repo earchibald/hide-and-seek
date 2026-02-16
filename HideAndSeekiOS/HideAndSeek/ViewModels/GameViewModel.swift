@@ -150,7 +150,7 @@ class GameViewModel: ObservableObject {
 
         if tile.content != .friend && turns <= 0 {
             gameStatus = .lost
-            SoundManager.shared.playGameOver(soundEnabled: settings.soundEnabled)
+            SoundManager.shared.playGameOver(soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
         }
 
         if !message.isEmpty {
