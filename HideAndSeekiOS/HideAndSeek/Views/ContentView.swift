@@ -42,7 +42,10 @@ struct ContentView: View {
                 
                 // Grid
                 GridView(viewModel: viewModel)
-                
+
+                // Stats Button
+                StatsButtonView(viewModel: viewModel)
+
                 // Settings Toggle
                 SettingsView(viewModel: viewModel)
                 
@@ -62,6 +65,14 @@ struct ContentView: View {
         }
         .sheet(isPresented: $viewModel.showSettings) {
             SettingsSheetView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.showStats) {
+            StatsView(viewModel: viewModel)
+        }
+        .overlay {
+            if let milestone = viewModel.celebrateMilestone {
+                MilestoneView(milestone: milestone, viewModel: viewModel)
+            }
         }
     }
 }
@@ -159,6 +170,15 @@ struct WinView: View {
             .foregroundColor(.white)
             .cornerRadius(10)
             .font(.system(size: 18, weight: .bold))
+
+            Button("Show Stats") {
+                viewModel.showStats = true
+            }
+            .padding()
+            .background(Color(red: 0.2, green: 0.45, blue: 0.2))
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .font(.system(size: 18, weight: .bold))
         }
         .padding()
         .background(Color(red: 0.25, green: 0.6, blue: 0.25))
@@ -192,9 +212,33 @@ struct LoseView: View {
     }
 }
 
+struct StatsButtonView: View {
+    @ObservedObject var viewModel: GameViewModel
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Button(action: {
+                viewModel.showStats.toggle()
+            }) {
+                HStack {
+                    Text("📊 Player Stats")
+                        .font(.system(size: 16, weight: .bold))
+                    Spacer()
+                    Text(viewModel.showStats ? "▼" : "▶")
+                }
+                .foregroundColor(.white)
+                .padding()
+            }
+        }
+        .background(Color(red: 0.15, green: 0.4, blue: 0.15))
+        .cornerRadius(10)
+        .shadow(radius: 5)
+    }
+}
+
 struct SettingsView: View {
     @ObservedObject var viewModel: GameViewModel
-    
+
     var body: some View {
         VStack(spacing: 12) {
             Button(action: {

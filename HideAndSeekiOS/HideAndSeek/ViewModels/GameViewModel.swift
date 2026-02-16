@@ -35,6 +35,8 @@ class GameViewModel: ObservableObject {
     @Published var friendPos: Position?
     @Published var feedback: FeedbackMessage?
     @Published var showSettings = false
+    @Published var showStats = false
+    @Published var celebrateMilestone: Int? = nil
     
     init() {
         generateBoard()
@@ -126,6 +128,10 @@ class GameViewModel: ObservableObject {
             message = "You found the Friend! 🎉"
             feedbackColor = .green
 
+            // Record win and check for milestone
+            StatsManager.shared.recordGame(won: true, turnsRemaining: turns)
+            celebrateMilestone = StatsManager.shared.checkMilestone()
+
         case .coin:
             turnChange += TURN_BONUS_COIN
             message = "Coin! (\(turnChange) Turn\(abs(turnChange) != 1 ? "s" : ""))"
@@ -151,6 +157,9 @@ class GameViewModel: ObservableObject {
         if tile.content != .friend && turns <= 0 {
             gameStatus = .lost
             SoundManager.shared.playGameOver(soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
+
+            // Record loss
+            StatsManager.shared.recordGame(won: false, turnsRemaining: 0)
         }
 
         if !message.isEmpty {

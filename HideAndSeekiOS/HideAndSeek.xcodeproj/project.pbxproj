@@ -13,6 +13,7 @@
 		0A76F2C02F429AA500F56EC0 /* shovel.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2BB2F429AA500F56EC0 /* shovel.wav */; };
 		0A76F2C12F429AA500F56EC0 /* compass.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2BA2F429AA500F56EC0 /* compass.wav */; };
 		0A76F2C22F429AA500F56EC0 /* coins.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2B92F429AA500F56EC0 /* coins.wav */; };
+		0A76F2C42F42A07800F56EC0 /* failure.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0A76F2C32F42A07800F56EC0 /* failure.wav */; };
 		AA0001 /* HideAndSeekApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0001 /* HideAndSeekApp.swift */; };
 		AA0002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0002 /* ContentView.swift */; };
 		AA0003 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0003 /* Tile.swift */; };
@@ -28,6 +29,7 @@
 		0A76F2BA2F429AA500F56EC0 /* compass.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = compass.wav; sourceTree = "<group>"; };
 		0A76F2BB2F429AA500F56EC0 /* shovel.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shovel.wav; sourceTree = "<group>"; };
 		0A76F2BC2F429AA500F56EC0 /* victory.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = victory.wav; sourceTree = "<group>"; };
+		0A76F2C32F42A07800F56EC0 /* failure.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = failure.wav; sourceTree = "<group>"; };
 		BB0001 /* HideAndSeekApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideAndSeekApp.swift; sourceTree = "<group>"; };
 		BB0002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB0003 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 		0A76F2BD2F429AA500F56EC0 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				0A76F2C32F42A07800F56EC0 /* failure.wav */,
 				0A76F2B82F429AA500F56EC0 /* buzzer.wav */,
 				0A76F2B92F429AA500F56EC0 /* coins.wav */,
 				0A76F2BA2F429AA500F56EC0 /* compass.wav */,
@@ -181,6 +184,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A76F2C42F42A07800F56EC0 /* failure.wav in Resources */,
 				0A76F2BE2F429AA500F56EC0 /* buzzer.wav in Resources */,
 				0A76F2BF2F429AA500F56EC0 /* victory.wav in Resources */,
 				0A76F2C02F429AA500F56EC0 /* shovel.wav in Resources */,
