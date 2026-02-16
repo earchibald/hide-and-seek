@@ -104,4 +104,15 @@ class SoundManager {
             lightImpact.impactOccurred()
         }
     }
+
+    /// Play game over sound and haptic when player loses
+    func playGameOver(soundEnabled: Bool) {
+        guard soundEnabled else { return }
+
+        // Play sad sound (system sound 1006 - low beep)
+        AudioServicesPlaySystemSound(1006)
+
+        // Play failure haptic
+        notificationFeedback.notificationOccurred(.error)
+    }
 }
