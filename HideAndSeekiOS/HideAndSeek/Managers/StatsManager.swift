@@ -41,9 +41,8 @@ class StatsManager {
         if won {
             stats.lifetimeWins += 1
             stats.currentStreak += 1
-            if stats.currentStreak > stats.bestStreak {
-                stats.bestStreak = stats.currentStreak
-            }
+            // Update best streak if current is better
+            stats.bestStreak = max(stats.bestStreak, stats.currentStreak)
         } else {
             stats.lifetimeLosses += 1
             stats.currentStreak = 0
