@@ -114,7 +114,7 @@ class GameViewModel: ObservableObject {
         let tile = board[row][col]
 
         // Play sound and haptic feedback
-        SoundManager.shared.play(for: tile.content, soundEnabled: settings.soundEnabled)
+        SoundManager.shared.play(for: tile.content, soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
 
         var turnChange = TURN_COST_TAP
         var message = ""

@@ -262,6 +262,14 @@ struct SettingsSheetView: View {
                         get: { viewModel.settings.soundEnabled },
                         set: { viewModel.settings.soundEnabled = $0 }
                     ))
+
+                    VStack(alignment: .leading) {
+                        Text("Volume Boost: \(String(format: "%.1fx", viewModel.settings.soundVolume))")
+                        Slider(value: Binding(
+                            get: { Double(viewModel.settings.soundVolume) },
+                            set: { viewModel.settings.soundVolume = Float($0) }
+                        ), in: 0.5...10.0, step: 0.5)
+                    }
                 }
 
                 Section {
