@@ -6,25 +6,14 @@
 //
 
 import AVFoundation
-import UIKit
 
 @MainActor class SoundManager: SoundPlaying {
     static let shared = SoundManager()
-
-    // Haptic feedback generators
-    private let lightImpact = UIImpactFeedbackGenerator(style: .light)
-    private let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
-    private let notificationFeedback = UINotificationFeedbackGenerator()
 
     // Audio players for each sound
     private var audioPlayers: [String: AVAudioPlayer] = [:]
 
     private init() {
-        // Prepare generators for better performance
-        lightImpact.prepare()
-        mediumImpact.prepare()
-        notificationFeedback.prepare()
-
         // Configure audio session for maximum volume
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
@@ -58,7 +47,7 @@ import UIKit
         }
     }
 
-    /// Play sound and haptic feedback for a tile content type
+    /// Play sound for a tile content type
     func play(for contentType: ContentType, soundEnabled: Bool, volume: Float = 1.0) {
         guard soundEnabled else { return }
 
@@ -82,46 +71,16 @@ import UIKit
             player.currentTime = 0  // Reset to beginning
             player.play()
         }
-
-        // Play haptics on main queue (required for haptics)
-        playHaptic(for: contentType)
     }
 
-    private func playHaptic(for contentType: ContentType) {
-        switch contentType {
-        case .empty:
-            lightImpact.impactOccurred()
-
-        case .trap:
-            notificationFeedback.notificationOccurred(.error)
-
-        case .coin:
-            mediumImpact.impactOccurred()
-
-        case .friend:
-            notificationFeedback.notificationOccurred(.success)
-
-        case .compass:
-            lightImpact.impactOccurred()
-        }
-    }
-
-    /// Play game over sound and haptic when player loses
+    /// Play game over sound when player loses
     func playGameOver(soundEnabled: Bool, volume: Float = 1.0) {
         guard soundEnabled else { return }
 
-        // Play failure sound
         if let player = audioPlayers["failure"] {
             player.volume = min(volume, 10.0)
             player.currentTime = 0
             player.play()
-        }
-
-        // Play long buzzing haptic (about 1 second)
-        for i in 0..<5 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.2) { [weak self] in
-                self?.notificationFeedback.notificationOccurred(.error)
-            }
         }
     }
 }
