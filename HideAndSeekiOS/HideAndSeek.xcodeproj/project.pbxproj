@@ -27,6 +27,10 @@
 		AA0005 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0005 /* GameViewModel.swift */; };
 		AA0006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB0006 /* Assets.xcassets */; };
 		TT0001 /* TileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0002 /* TileTests.swift */; };
+		TT0040 /* MockSoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0041 /* MockSoundManager.swift */; };
+		TT0042 /* MockStatsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0043 /* MockStatsTracker.swift */; };
+		TT0044 /* GameSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0045 /* GameSettingsTests.swift */; };
+		TT0046 /* GameStatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0047 /* GameStatsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +66,10 @@
 		CC0001 /* HideAndSeek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HideAndSeek.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		TT0002 /* TileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileTests.swift; sourceTree = "<group>"; };
 		TT0003 /* HideAndSeekTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HideAndSeekTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		TT0041 /* MockSoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSoundManager.swift; sourceTree = "<group>"; };
+		TT0043 /* MockStatsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStatsTracker.swift; sourceTree = "<group>"; };
+		TT0045 /* GameSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettingsTests.swift; sourceTree = "<group>"; };
+		TT0047 /* GameStatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStatsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,9 +177,21 @@
 		TT0004 /* HideAndSeekTests */ = {
 			isa = PBXGroup;
 			children = (
+				TT0050 /* Mocks */,
 				TT0002 /* TileTests.swift */,
+				TT0045 /* GameSettingsTests.swift */,
+				TT0047 /* GameStatsTests.swift */,
 			);
 			path = HideAndSeekTests;
+			sourceTree = "<group>";
+		};
+		TT0050 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				TT0041 /* MockSoundManager.swift */,
+				TT0043 /* MockStatsTracker.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,6 +319,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				TT0001 /* TileTests.swift in Sources */,
+				TT0040 /* MockSoundManager.swift in Sources */,
+				TT0042 /* MockStatsTracker.swift in Sources */,
+				TT0044 /* GameSettingsTests.swift in Sources */,
+				TT0046 /* GameStatsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
