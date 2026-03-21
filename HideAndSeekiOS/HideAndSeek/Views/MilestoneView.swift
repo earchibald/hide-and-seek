@@ -11,6 +11,7 @@ struct MilestoneView: View {
     let milestone: Int
     var viewModel: GameViewModel
     @State private var showAnimation = false
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
 
     var body: some View {
         ZStack {
@@ -24,20 +25,20 @@ struct MilestoneView: View {
             // Celebration card
             VStack(spacing: 20) {
                 // Trophy
-                Text("🏆")
+                Text("\u{1F3C6}")
                     .font(.system(size: 80))
-                    .scaleEffect(showAnimation ? 1.0 : 0.5)
-                    .animation(.spring(response: 0.6, dampingFraction: 0.5), value: showAnimation)
+                    .scaleEffect(showAnimation ? 1.0 : (reduceMotion ? 1.0 : 0.5))
+                    .animation(reduceMotion ? nil : .spring(response: 0.6, dampingFraction: 0.5), value: showAnimation)
 
                 // Title
                 Text("Milestone Achieved!")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(.white)
+                    .font(.title.bold())
+                    .foregroundStyle(.white)
 
                 // Milestone number
                 Text("\(milestone) Wins!")
-                    .font(.system(size: 36, weight: .heavy))
-                    .foregroundColor(.yellow)
+                    .font(.largeTitle.weight(.heavy))
+                    .foregroundStyle(.yellow)
 
                 Spacer()
                     .frame(height: 20)
@@ -49,34 +50,34 @@ struct MilestoneView: View {
                         viewModel.celebrateMilestone = nil
                     }) {
                         Text("Show Stats")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
+                            .font(.headline)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.blue)
-                            .cornerRadius(10)
+                            .clipShape(.rect(cornerRadius: 10))
                     }
 
                     Button(action: {
                         viewModel.celebrateMilestone = nil
                     }) {
                         Text("Continue Playing")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
+                            .font(.headline)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.green)
-                            .cornerRadius(10)
+                            .clipShape(.rect(cornerRadius: 10))
                     }
                 }
             }
             .padding(30)
             .frame(maxWidth: 320)
             .background(Color(red: 0.15, green: 0.4, blue: 0.15))
-            .cornerRadius(20)
+            .clipShape(.rect(cornerRadius: 20))
             .shadow(radius: 10)
             .opacity(showAnimation ? 1.0 : 0)
-            .animation(.easeIn(duration: 0.3), value: showAnimation)
+            .animation(.easeIn(duration: reduceMotion ? 0 : 0.3), value: showAnimation)
         }
         .onAppear {
             showAnimation = true

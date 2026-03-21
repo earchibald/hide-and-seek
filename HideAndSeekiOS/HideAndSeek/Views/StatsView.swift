@@ -9,29 +9,30 @@ import SwiftUI
 
 struct StatsView: View {
     var viewModel: GameViewModel
+    var statsManager: StatsManager = .shared
     @Environment(\.dismiss) var dismiss
     @State private var showClearConfirmation = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
                     // Lifetime Stats
                     StatsSectionView(
                         title: "LIFETIME STATS",
-                        stats: StatsManager.shared.getLifetimeStats()
+                        stats: statsManager.getLifetimeStats()
                     )
 
                     // Last 10 Games
                     StatsSectionView(
                         title: "LAST 10 GAMES",
-                        stats: StatsManager.shared.getLast10Stats()
+                        stats: statsManager.getLast10Stats()
                     )
 
                     // Last 100 Games
                     StatsSectionView(
                         title: "LAST 100 GAMES",
-                        stats: StatsManager.shared.getLast100Stats()
+                        stats: statsManager.getLast100Stats()
                     )
 
                     // Clear Stats Button
@@ -39,12 +40,12 @@ struct StatsView: View {
                         showClearConfirmation = true
                     }) {
                         Text("Clear All Stats")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(.white)
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color.red)
-                            .cornerRadius(10)
+                            .clipShape(.rect(cornerRadius: 10))
                     }
                     .padding(.horizontal)
                     .padding(.top, 10)
@@ -55,17 +56,17 @@ struct StatsView: View {
             .navigationTitle("Player Statistics")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                 }
             }
             .alert("Clear All Statistics?", isPresented: $showClearConfirmation) {
                 Button("Cancel", role: .cancel) { }
                 Button("Clear", role: .destructive) {
-                    StatsManager.shared.clearStats()
+                    statsManager.clearStats()
                 }
             } message: {
                 Text("This will permanently delete all your game statistics. This cannot be undone.")
@@ -81,44 +82,44 @@ struct StatsSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(Color(red: 0.7, green: 0.9, blue: 0.7))
+                .font(.caption.bold())
+                .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
                 .padding(.bottom, 4)
 
             VStack(spacing: 8) {
                 HStack {
                     Text("Games Played:")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                     Spacer()
                     Text("\(stats.gamesPlayed)")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .fontWeight(.bold)
                 }
 
                 HStack {
                     Text("Wins:")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                     Spacer()
                     Text("\(stats.wins)")
-                        .foregroundColor(.green)
+                        .foregroundStyle(.green)
                         .fontWeight(.bold)
                 }
 
                 HStack {
                     Text("Losses:")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                     Spacer()
                     Text("\(stats.losses)")
-                        .foregroundColor(.red)
+                        .foregroundStyle(.red)
                         .fontWeight(.bold)
                 }
 
                 HStack {
                     Text("Win Rate:")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                     Spacer()
                     Text(stats.winRateString)
-                        .foregroundColor(.yellow)
+                        .foregroundStyle(.yellow)
                         .fontWeight(.bold)
                 }
 
@@ -127,27 +128,27 @@ struct StatsSectionView: View {
 
                 HStack {
                     Text("Current Streak:")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                     Spacer()
                     Text("\(stats.currentStreak)")
-                        .foregroundColor(.orange)
+                        .foregroundStyle(.orange)
                         .fontWeight(.bold)
                 }
 
                 HStack {
                     Text("Best Streak:")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                     Spacer()
                     Text("\(stats.bestStreak)")
-                        .foregroundColor(.orange)
+                        .foregroundStyle(.orange)
                         .fontWeight(.bold)
                 }
             }
-            .font(.system(size: 15))
+            .font(.subheadline)
         }
         .padding()
         .background(Color(red: 0.15, green: 0.4, blue: 0.15))
-        .cornerRadius(10)
+        .clipShape(.rect(cornerRadius: 10))
         .shadow(radius: 3)
         .padding(.horizontal)
     }
