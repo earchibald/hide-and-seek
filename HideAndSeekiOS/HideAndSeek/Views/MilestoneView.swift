@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MilestoneView: View {
     let milestone: Int
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
     @State private var showAnimation = false
 
     var body: some View {

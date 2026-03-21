@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = GameViewModel()
+    @State private var viewModel = GameViewModel()
     
     var body: some View {
         ZStack {
@@ -63,10 +63,10 @@ struct ContentView: View {
             }
             .padding(.horizontal, 8)
         }
-        .sheet(isPresented: $viewModel.showSettings) {
+        .sheet(isPresented: Bindable(viewModel).showSettings) {
             SettingsSheetView(viewModel: viewModel)
         }
-        .sheet(isPresented: $viewModel.showStats) {
+        .sheet(isPresented: Bindable(viewModel).showStats) {
             StatsView(viewModel: viewModel)
         }
         .overlay {
@@ -78,7 +78,7 @@ struct ContentView: View {
 }
 
 struct HUDView: View {
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
     
     var body: some View {
         VStack(spacing: 12) {
@@ -116,7 +116,7 @@ struct HUDView: View {
 }
 
 struct GridView: View {
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
     
     var body: some View {
         VStack(spacing: 2) {
@@ -137,7 +137,7 @@ struct GridView: View {
 
 struct TileButton: View {
     let tile: Tile
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
     
     var body: some View {
         Button(action: {
@@ -154,7 +154,7 @@ struct TileButton: View {
 }
 
 struct WinView: View {
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
     
     var body: some View {
         VStack(spacing: 12) {
@@ -188,7 +188,7 @@ struct WinView: View {
 }
 
 struct LoseView: View {
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
     
     var body: some View {
         VStack(spacing: 12) {
@@ -213,7 +213,7 @@ struct LoseView: View {
 }
 
 struct StatsButtonView: View {
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
 
     var body: some View {
         VStack(spacing: 12) {
@@ -237,7 +237,7 @@ struct StatsButtonView: View {
 }
 
 struct SettingsView: View {
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
 
     var body: some View {
         VStack(spacing: 12) {
@@ -261,7 +261,7 @@ struct SettingsView: View {
 }
 
 struct SettingsSheetView: View {
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
     @Environment(\.dismiss) var dismiss
     
     var body: some View {

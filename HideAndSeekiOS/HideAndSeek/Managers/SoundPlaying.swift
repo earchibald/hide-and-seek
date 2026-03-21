@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SoundPlaying {
+@MainActor protocol SoundPlaying {
     func play(for contentType: ContentType, soundEnabled: Bool, volume: Float)
     func playGameOver(soundEnabled: Bool, volume: Float)
 }

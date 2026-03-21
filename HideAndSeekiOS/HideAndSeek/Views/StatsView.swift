@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StatsView: View {
-    @ObservedObject var viewModel: GameViewModel
+    var viewModel: GameViewModel
     @Environment(\.dismiss) var dismiss
     @State private var showClearConfirmation = false
 

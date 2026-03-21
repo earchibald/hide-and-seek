@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol StatsTracking {
+@MainActor protocol StatsTracking {
     func recordGame(won: Bool, turnsRemaining: Int)
     func checkMilestone() -> Int?
 }

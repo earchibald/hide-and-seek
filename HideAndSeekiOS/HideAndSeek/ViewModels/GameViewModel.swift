@@ -20,7 +20,7 @@ struct FeedbackMessage: Identifiable {
     let color: Color
 }
 
-class GameViewModel: ObservableObject {
+@Observable @MainActor class GameViewModel {
     // Game balance constants
     let TURN_COST_TAP = -1
     let TURN_BONUS_COIN = 1
@@ -31,15 +31,18 @@ class GameViewModel: ObservableObject {
     let soundManager: SoundPlaying
     let statsTracker: StatsTracking
 
-    @Published var settings = GameSettings()
-    @Published var board: [[Tile]] = []
-    @Published var turns: Int = 15
-    @Published var gameStatus: GameStatus = .playing
-    @Published var friendPos: Position?
-    @Published var feedback: FeedbackMessage?
-    @Published var showSettings = false
-    @Published var showStats = false
-    @Published var celebrateMilestone: Int? = nil
+    var settings = GameSettings()
+    var board: [[Tile]] = []
+    var turns: Int = 15
+    var gameStatus: GameStatus = .playing
+    var friendPos: Position?
+    var feedback: FeedbackMessage?
+    var showSettings = false
+    var showStats = false
+    var celebrateMilestone: Int? = nil
+    var revealCount = 0
+    var lastRevealedContent: ContentType?
+    var isGameOver = false
     
     init(soundManager: SoundPlaying = SoundManager.shared,
          statsTracker: StatsTracking = StatsManager.shared) {
@@ -119,7 +122,9 @@ class GameViewModel: ObservableObject {
         guard !board[row][col].isRevealed else { return }
 
         board[row][col].isRevealed = true
+        revealCount += 1
         let tile = board[row][col]
+        lastRevealedContent = tile.content
 
         // Play sound and haptic feedback
         soundManager.play(for: tile.content, soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
@@ -162,6 +167,7 @@ class GameViewModel: ObservableObject {
 
         if tile.content != .friend && turns <= 0 {
             gameStatus = .lost
+            isGameOver = true
             soundManager.playGameOver(soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
 
             // Record loss
@@ -170,8 +176,9 @@ class GameViewModel: ObservableObject {
 
         if !message.isEmpty {
             feedback = FeedbackMessage(message: message, color: feedbackColor)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.feedback = nil
+            Task {
+                try? await Task.sleep(for: .seconds(2))
+                feedback = nil
             }
         }
     }
@@ -181,6 +188,9 @@ class GameViewModel: ObservableObject {
         turns = settings.startingTurns
         gameStatus = .playing
         feedback = nil
+        isGameOver = false
+        revealCount = 0
+        lastRevealedContent = nil
     }
     
     func applySettings() {

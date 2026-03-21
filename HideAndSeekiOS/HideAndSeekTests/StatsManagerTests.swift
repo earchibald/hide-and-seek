@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import HideAndSeek
 
+@MainActor
 struct StatsManagerTests {
     private let suiteName: String
     private let defaults: UserDefaults

@@ -1,7 +1,7 @@
 import Foundation
 @testable import HideAndSeek
 
-final class MockSoundManager: SoundPlaying {
+@MainActor final class MockSoundManager: SoundPlaying {
     var playCallCount = 0
     var lastPlayedContentType: ContentType?
     var lastSoundEnabled: Bool?

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class StatsManager: StatsTracking {
+@MainActor class StatsManager: StatsTracking {
     static let shared = StatsManager()
 
     private let defaults: UserDefaults

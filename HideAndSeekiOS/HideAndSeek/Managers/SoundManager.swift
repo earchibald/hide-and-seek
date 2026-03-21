@@ -8,7 +8,7 @@
 import AVFoundation
 import UIKit
 
-class SoundManager: SoundPlaying {
+@MainActor class SoundManager: SoundPlaying {
     static let shared = SoundManager()
 
     // Haptic feedback generators
