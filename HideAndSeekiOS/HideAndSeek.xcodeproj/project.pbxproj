@@ -26,7 +26,18 @@
 		AA0004 /* GameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0004 /* GameSettings.swift */; };
 		AA0005 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0005 /* GameViewModel.swift */; };
 		AA0006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB0006 /* Assets.xcassets */; };
+		TT0001 /* TileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0002 /* TileTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		TT0010 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = GG0001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FF0001;
+			remoteInfo = HideAndSeek;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0A12F38B2F428058007A0625 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
@@ -49,10 +60,19 @@
 		BB0005 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		BB0006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CC0001 /* HideAndSeek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HideAndSeek.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		TT0002 /* TileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileTests.swift; sourceTree = "<group>"; };
+		TT0003 /* HideAndSeekTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HideAndSeekTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		DD0001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TT0020 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -90,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				EE0002 /* HideAndSeek */,
+				TT0004 /* HideAndSeekTests */,
 				EE0003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -112,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				CC0001 /* HideAndSeek.app */,
+				TT0003 /* HideAndSeekTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -144,6 +166,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		TT0004 /* HideAndSeekTests */ = {
+			isa = PBXGroup;
+			children = (
+				TT0002 /* TileTests.swift */,
+			);
+			path = HideAndSeekTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -164,6 +194,24 @@
 			productReference = CC0001 /* HideAndSeek.app */;
 			productType = "com.apple.product-type.application";
 		};
+		TT0005 /* HideAndSeekTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = TT0030 /* Build configuration list for PBXNativeTarget "HideAndSeekTests" */;
+			buildPhases = (
+				TT0006 /* Sources */,
+				TT0020 /* Frameworks */,
+				TT0021 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				TT0011 /* PBXTargetDependency */,
+			);
+			name = HideAndSeekTests;
+			productName = HideAndSeekTests;
+			productReference = TT0003 /* HideAndSeekTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -176,6 +224,10 @@
 				TargetAttributes = {
 					FF0001 = {
 						CreatedOnToolsVersion = 15.0;
+					};
+					TT0005 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = FF0001;
 					};
 				};
 			};
@@ -193,6 +245,7 @@
 			projectRoot = "";
 			targets = (
 				FF0001 /* HideAndSeek */,
+				TT0005 /* HideAndSeekTests */,
 			);
 		};
 /* End PBXProject section */
@@ -209,6 +262,13 @@
 				0A76F2C12F429AA500F56EC0 /* compass.wav in Resources */,
 				0A76F2C22F429AA500F56EC0 /* coins.wav in Resources */,
 				AA0006 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TT0021 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,7 +294,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		TT0006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				TT0001 /* TileTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		TT0011 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FF0001 /* HideAndSeek */;
+			targetProxy = TT0010 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		HH0001 /* Debug */ = {
@@ -413,6 +489,44 @@
 			};
 			name = Release;
 		};
+		TT0031 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LMMVWL22J9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hideandseek.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HideAndSeek.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HideAndSeek";
+			};
+			name = Debug;
+		};
+		TT0032 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LMMVWL22J9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hideandseek.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HideAndSeek.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HideAndSeek";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -430,6 +544,15 @@
 			buildConfigurations = (
 				HH0001 /* Debug */,
 				HH0002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		TT0030 /* Build configuration list for PBXNativeTarget "HideAndSeekTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TT0031 /* Debug */,
+				TT0032 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
