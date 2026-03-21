@@ -29,6 +29,16 @@ protocol SoundPlaying {
     func play(for contentType: ContentType, soundEnabled: Bool, volume: Float)
     func playGameOver(soundEnabled: Bool, volume: Float)
 }
+
+// Provide default volume parameter to match existing call sites
+extension SoundPlaying {
+    func play(for contentType: ContentType, soundEnabled: Bool) {
+        play(for: contentType, soundEnabled: soundEnabled, volume: 1.0)
+    }
+    func playGameOver(soundEnabled: Bool) {
+        playGameOver(soundEnabled: soundEnabled, volume: 1.0)
+    }
+}
 ```
 
 **`StatsTracking.swift`**
@@ -42,8 +52,8 @@ protocol StatsTracking {
 
 ### Conformances
 
-- `SoundManager: SoundPlaying` — methods already match, just add conformance.
-- `StatsManager: StatsTracking` — methods already match, just add conformance.
+- `SoundManager: SoundPlaying` — existing methods match the protocol requirements. The protocol extension provides default `volume` parameters to preserve existing call sites that don't pass `volume`.
+- `StatsManager: StatsTracking` — methods already match, just add conformance. Note: `StatsTracking` only includes the two methods `GameViewModel` calls. Tests for `getLifetimeStats()`, `getLast10Stats()`, `getLast100Stats()`, and `clearStats()` operate directly on the concrete `StatsManager` class.
 
 ### GameViewModel Dependency Injection
 
@@ -94,7 +104,14 @@ class StatsManager: StatsTracking {
 }
 ```
 
-All internal `UserDefaults.standard` references change to `self.defaults`.
+All internal `UserDefaults.standard` references change to `self.defaults`. Specifically: `saveStats()` (line 151) and `init()` (lines 21-22) — exactly 2 references to update.
+
+### Implementation Notes
+
+- **`@MainActor` isolation:** `GameViewModel` is an `ObservableObject` with `@Published` properties. Tests that access these properties may need `@MainActor` annotation or should run on the main actor.
+- **Feedback timing:** `handleTileClick` schedules `feedback = nil` after a 2-second `DispatchQueue.main.asyncAfter` delay. Tests should verify feedback state immediately after the click, before the delay fires.
+- **Board randomness:** Board generation uses `Int.random` and `Array.shuffle`. Tests verify invariants (correct content counts, grid dimensions) by scanning the generated board, not by controlling the random seed.
+- **UserDefaults teardown:** Each `StatsManagerTests` test creates an isolated `UserDefaults(suiteName:)`. Clean up with `UserDefaults.removePersistentDomain(forName:)` in `deinit`.
 
 ## Section 2: Test Target & File Structure
 
@@ -125,11 +142,15 @@ HideAndSeekiOS/
 final class MockSoundManager: SoundPlaying {
     var playCallCount = 0
     var lastPlayedContentType: ContentType?
+    var lastSoundEnabled: Bool?
+    var lastVolume: Float?
     var gameOverCallCount = 0
 
     func play(for contentType: ContentType, soundEnabled: Bool, volume: Float) {
         playCallCount += 1
         lastPlayedContentType = contentType
+        lastSoundEnabled = soundEnabled
+        lastVolume = volume
     }
 
     func playGameOver(soundEnabled: Bool, volume: Float) {
@@ -193,15 +214,17 @@ final class MockStatsTracker: StatsTracking {
 | Remaining tiles are empty | Board generation invariant |
 | Click empty tile | Reveals, costs 1 turn, gray feedback |
 | Click coin tile | Reveals, net 0 turn change, yellow feedback |
-| Click trap tile | Reveals, costs 2 turns, red feedback |
-| Click friend tile | Sets `.won`, records win, checks milestone |
-| Click compass tile | Reveals, no feedback message |
+| Click trap tile | Reveals, net -2 turns (tap cost + trap penalty), red feedback |
+| Click friend tile | Sets `.won`, costs 1 turn, records win via stats tracker, checks milestone |
+| Click compass tile | Reveals, costs 1 turn, no feedback message |
 | Click already-revealed tile | No effect, no turn cost |
 | Click after game over | No effect |
 | Losing condition | Turns reach 0 → `.lost`, game over sound, loss recorded |
 | Milestone triggered | Mock returns value, `celebrateMilestone` is set |
 | Reset game | Board regenerated, turns reset, status `.playing` |
 | Apply settings | Closes settings, resets game |
+| Sound/volume passthrough | Verify correct `soundEnabled` and `volume` values reach mock |
+| Game balance constants | `TURN_COST_TAP`, `TURN_BONUS_COIN`, `TURN_PENALTY_TRAP`, `TURN_PENALTY_EMPTY`, `GRID_SIZE` have expected values |
 
 ### StatsManagerTests.swift
 
@@ -212,10 +235,10 @@ All tests use an isolated `UserDefaults(suiteName:)` instance, removed in teardo
 | Record win | Increments `lifetimeWins`, updates streak |
 | Record loss | Increments `lifetimeLosses`, resets current streak |
 | Best streak tracking | Tracks maximum across win/loss sequences |
-| History trimming | Keeps only last 100 games |
-| Milestone — first reach | Returns milestone number |
-| Milestone — already reached | Returns `nil` |
-| Milestone progression | Higher milestone returns new value |
+| History trimming | Record 101+ games, verify only last 100 retained (checked via `getLast100Stats()` count) |
+| Milestone — first reach | Returns milestone number (test with known milestones: 10, 25, 50, 100, 500) |
+| Milestone — already reached | Returns `nil` on subsequent calls |
+| Milestone progression | Reaching higher milestone (e.g., 25 after 10) returns the new value |
 | `getLifetimeStats()` | Correct totals and win rate |
 | `getLast10Stats()` | Windowed calculation |
 | `getLast100Stats()` | Windowed calculation |
