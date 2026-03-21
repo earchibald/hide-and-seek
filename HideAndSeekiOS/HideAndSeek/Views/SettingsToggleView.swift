@@ -1,0 +1,32 @@
+//
+//  SettingsToggleView.swift
+//  HideAndSeek
+//
+//  Created by Hide & Seek Team
+//
+
+import SwiftUI
+
+struct SettingsToggleView: View {
+    var viewModel: GameViewModel
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Button(action: {
+                viewModel.showSettings.toggle()
+            }) {
+                HStack {
+                    Text("⚙️ Settings / Debug")
+                        .font(.subheadline.bold())
+                    Spacer()
+                    Text(viewModel.showSettings ? "▼" : "▶")
+                }
+                .foregroundStyle(.white)
+                .padding()
+            }
+        }
+        .background(Color(red: 0.15, green: 0.4, blue: 0.15))
+        .clipShape(.rect(cornerRadius: 10))
+        .shadow(radius: 5)
+    }
+}

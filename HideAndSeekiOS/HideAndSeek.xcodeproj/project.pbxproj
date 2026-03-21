@@ -33,6 +33,14 @@
 		TT0046 /* GameStatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0047 /* GameStatsTests.swift */; };
 		TT0048 /* StatsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0049 /* StatsManagerTests.swift */; };
 		TT0052 /* GameViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0051 /* GameViewModelTests.swift */; };
+		VV0001 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0011 /* HUDView.swift */; };
+		VV0002 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0012 /* GridView.swift */; };
+		VV0003 /* TileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0013 /* TileButton.swift */; };
+		VV0004 /* WinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0014 /* WinView.swift */; };
+		VV0005 /* LoseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0015 /* LoseView.swift */; };
+		VV0006 /* StatsButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0016 /* StatsButtonView.swift */; };
+		VV0007 /* SettingsToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0017 /* SettingsToggleView.swift */; };
+		VV0008 /* SettingsSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0018 /* SettingsSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +82,14 @@
 		TT0047 /* GameStatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStatsTests.swift; sourceTree = "<group>"; };
 		TT0049 /* StatsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsManagerTests.swift; sourceTree = "<group>"; };
 		TT0051 /* GameViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModelTests.swift; sourceTree = "<group>"; };
+		VV0011 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
+		VV0012 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
+		VV0013 /* TileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileButton.swift; sourceTree = "<group>"; };
+		VV0014 /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
+		VV0015 /* LoseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoseView.swift; sourceTree = "<group>"; };
+		VV0016 /* StatsButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsButtonView.swift; sourceTree = "<group>"; };
+		VV0017 /* SettingsToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToggleView.swift; sourceTree = "<group>"; };
+		VV0018 /* SettingsSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,9 +187,17 @@
 		EE0006 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0A76F2C92F42A3A200F56EC0 /* MilestoneView.swift */,
-				0A76F2CA2F42A3A200F56EC0 /* StatsView.swift */,
 				BB0002 /* ContentView.swift */,
+				VV0012 /* GridView.swift */,
+				VV0011 /* HUDView.swift */,
+				VV0015 /* LoseView.swift */,
+				0A76F2C92F42A3A200F56EC0 /* MilestoneView.swift */,
+				VV0018 /* SettingsSheetView.swift */,
+				VV0017 /* SettingsToggleView.swift */,
+				VV0016 /* StatsButtonView.swift */,
+				0A76F2CA2F42A3A200F56EC0 /* StatsView.swift */,
+				VV0013 /* TileButton.swift */,
+				VV0014 /* WinView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -317,6 +341,14 @@
 				0A12F3902F428059007A0625 /* SoundPlaying.swift in Sources */,
 				0A12F3912F428059007A0625 /* StatsTracking.swift in Sources */,
 				0A76F2C82F42A39100F56EC0 /* StatsManager.swift in Sources */,
+				VV0001 /* HUDView.swift in Sources */,
+				VV0002 /* GridView.swift in Sources */,
+				VV0003 /* TileButton.swift in Sources */,
+				VV0004 /* WinView.swift in Sources */,
+				VV0005 /* LoseView.swift in Sources */,
+				VV0006 /* StatsButtonView.swift in Sources */,
+				VV0007 /* SettingsToggleView.swift in Sources */,
+				VV0008 /* SettingsSheetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
