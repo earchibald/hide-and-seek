@@ -27,7 +27,10 @@ class GameViewModel: ObservableObject {
     let TURN_PENALTY_TRAP = -1
     let TURN_PENALTY_EMPTY = 0
     let GRID_SIZE = 10
-    
+
+    let soundManager: SoundPlaying
+    let statsTracker: StatsTracking
+
     @Published var settings = GameSettings()
     @Published var board: [[Tile]] = []
     @Published var turns: Int = 15
@@ -38,7 +41,10 @@ class GameViewModel: ObservableObject {
     @Published var showStats = false
     @Published var celebrateMilestone: Int? = nil
     
-    init() {
+    init(soundManager: SoundPlaying = SoundManager.shared,
+         statsTracker: StatsTracking = StatsManager.shared) {
+        self.soundManager = soundManager
+        self.statsTracker = statsTracker
         generateBoard()
         turns = settings.startingTurns
     }
@@ -116,7 +122,7 @@ class GameViewModel: ObservableObject {
         let tile = board[row][col]
 
         // Play sound and haptic feedback
-        SoundManager.shared.play(for: tile.content, soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
+        soundManager.play(for: tile.content, soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
 
         var turnChange = TURN_COST_TAP
         var message = ""
@@ -129,8 +135,8 @@ class GameViewModel: ObservableObject {
             feedbackColor = .green
 
             // Record win and check for milestone
-            StatsManager.shared.recordGame(won: true, turnsRemaining: turns)
-            celebrateMilestone = StatsManager.shared.checkMilestone()
+            statsTracker.recordGame(won: true, turnsRemaining: turns)
+            celebrateMilestone = statsTracker.checkMilestone()
 
         case .coin:
             turnChange += TURN_BONUS_COIN
@@ -156,10 +162,10 @@ class GameViewModel: ObservableObject {
 
         if tile.content != .friend && turns <= 0 {
             gameStatus = .lost
-            SoundManager.shared.playGameOver(soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
+            soundManager.playGameOver(soundEnabled: settings.soundEnabled, volume: settings.soundVolume)
 
             // Record loss
-            StatsManager.shared.recordGame(won: false, turnsRemaining: 0)
+            statsTracker.recordGame(won: false, turnsRemaining: 0)
         }
 
         if !message.isEmpty {

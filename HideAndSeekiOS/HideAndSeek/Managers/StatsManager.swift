@@ -7,18 +7,23 @@
 
 import Foundation
 
-class StatsManager {
+class StatsManager: StatsTracking {
     static let shared = StatsManager()
 
+    private let defaults: UserDefaults
     private let userDefaultsKey = "hideAndSeek.playerStats"
     private let maxHistorySize = 100
     private let milestones = [10, 25, 50, 100, 500]
 
     private var stats: GameStats
 
-    private init() {
-        // Load existing stats or create new
-        if let data = UserDefaults.standard.data(forKey: userDefaultsKey),
+    private convenience init() {
+        self.init(defaults: .standard)
+    }
+
+    init(defaults: UserDefaults) {
+        self.defaults = defaults
+        if let data = defaults.data(forKey: userDefaultsKey),
            let decoded = try? JSONDecoder().decode(GameStats.self, from: data) {
             self.stats = decoded
         } else {
@@ -148,7 +153,7 @@ class StatsManager {
     /// Save stats to UserDefaults
     private func saveStats() {
         if let encoded = try? JSONEncoder().encode(stats) {
-            UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
+            defaults.set(encoded, forKey: userDefaultsKey)
         }
     }
 }
