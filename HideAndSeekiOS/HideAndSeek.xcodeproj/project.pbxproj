@@ -31,6 +31,7 @@
 		TT0042 /* MockStatsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0043 /* MockStatsTracker.swift */; };
 		TT0044 /* GameSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0045 /* GameSettingsTests.swift */; };
 		TT0046 /* GameStatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0047 /* GameStatsTests.swift */; };
+		TT0048 /* StatsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0049 /* StatsManagerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		TT0043 /* MockStatsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStatsTracker.swift; sourceTree = "<group>"; };
 		TT0045 /* GameSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettingsTests.swift; sourceTree = "<group>"; };
 		TT0047 /* GameStatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStatsTests.swift; sourceTree = "<group>"; };
+		TT0049 /* StatsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsManagerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +183,7 @@
 				TT0002 /* TileTests.swift */,
 				TT0045 /* GameSettingsTests.swift */,
 				TT0047 /* GameStatsTests.swift */,
+				TT0049 /* StatsManagerTests.swift */,
 			);
 			path = HideAndSeekTests;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				TT0042 /* MockStatsTracker.swift in Sources */,
 				TT0044 /* GameSettingsTests.swift in Sources */,
 				TT0046 /* GameStatsTests.swift in Sources */,
+				TT0048 /* StatsManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
