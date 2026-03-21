@@ -12,7 +12,7 @@ Full modernization of the Hide & Seek iOS app's SwiftUI layer. Raise deployment 
 - **Deployment target:** iOS 26, Swift 6.2
 - **Data flow:** Full migration from `ObservableObject`/`@Published`/`@StateObject`/`@ObservedObject` to `@Observable`/`@State`/`@Bindable`
 - **File structure:** Extract all types from ContentView.swift into individual files
-- **Deprecated APIs:** Fix all (~25 instances across foregroundColor, cornerRadius, NavigationView, etc.)
+- **Deprecated APIs:** Fix all (~50 instances across foregroundColor, cornerRadius, NavigationView, etc.)
 - **Accessibility:** Full pass — Dynamic Type, VoiceOver labels, Reduce Motion
 - **Haptics:** Migrate from UIKit haptic APIs to SwiftUI `sensoryFeedback()` modifiers
 - **Concurrency:** Replace all `DispatchQueue` usage with Swift concurrency
@@ -28,8 +28,13 @@ Update `project.pbxproj`:
 
 ### Before
 
+The ViewModel already has DI properties (`soundManager`, `statsTracker`) from the testing refactor. The migration removes `ObservableObject`/`@Published` and adds `@Observable`/`@MainActor`:
+
 ```swift
 class GameViewModel: ObservableObject {
+    let soundManager: SoundPlaying
+    let statsTracker: StatsTracking
+
     @Published var settings = GameSettings()
     @Published var board: [[Tile]] = []
     @Published var turns: Int = 15
@@ -40,7 +45,8 @@ class GameViewModel: ObservableObject {
     @Published var showStats = false
     @Published var celebrateMilestone: Int? = nil
 
-    init() { ... }
+    init(soundManager: SoundPlaying = SoundManager.shared,
+         statsTracker: StatsTracking = StatsManager.shared) { ... }
 }
 ```
 
@@ -62,7 +68,9 @@ class GameViewModel {
     var showStats = false
     var celebrateMilestone: Int? = nil
 
-    // Haptic trigger properties — views attach sensoryFeedback() to these
+    // Haptic trigger — a counter that increments on each reveal, paired with content type.
+    // Using a counter ensures sensoryFeedback fires even for consecutive same-content tiles.
+    var revealCount = 0
     var lastRevealedContent: ContentType?
     var isGameOver = false
 
@@ -75,10 +83,9 @@ class GameViewModel {
 
 - Remove `ObservableObject` conformance and all `@Published` wrappers
 - Add `@Observable` and `@MainActor` annotations
-- Add `lastRevealedContent` and `isGameOver` properties for driving `sensoryFeedback()` from views
-- Update `handleTileClick` to set `lastRevealedContent` after each reveal
+- Add `revealCount`, `lastRevealedContent`, and `isGameOver` properties for driving `sensoryFeedback()` from views
+- Update `handleTileClick` to increment `revealCount` and set `lastRevealedContent` after each reveal (counter ensures haptics fire even for consecutive same-content tiles)
 - Replace `DispatchQueue.main.asyncAfter` feedback dismissal with `Task { try? await Task.sleep(for: .seconds(2)); feedback = nil }`
-- `import Combine` is not needed (no `ObservableObject`)
 
 ### View-Side Changes
 
@@ -92,7 +99,9 @@ class GameViewModel {
 
 ### Test Impact
 
-Existing `GameViewModelTests` use `@MainActor struct` already. The `MockSoundManager` and `MockStatsTracker` continue to work unchanged. Tests may need minor adjustments for the new `lastRevealedContent`/`isGameOver` properties.
+Existing `GameViewModelTests` use `@MainActor struct` already, so test instantiation (`let vm = GameViewModel(soundManager: mock, statsTracker: mock)`) continues to work under `@MainActor` isolation. The `MockSoundManager` and `MockStatsTracker` continue to work unchanged. Tests may need minor adjustments for the new `revealCount`/`lastRevealedContent`/`isGameOver` properties.
+
+Total `@ObservedObject` instances to migrate: 10 (8 in ContentView.swift, 1 in StatsView.swift, 1 in MilestoneView.swift).
 
 ## Section 3: File Extraction
 
@@ -115,7 +124,9 @@ All extracted files use modern patterns from the start:
 - `foregroundStyle()` (not `foregroundColor()`)
 - `.clipShape(.rect(cornerRadius:))` (not `.cornerRadius()`)
 
-Existing separate files (`StatsView.swift`, `MilestoneView.swift`) are modernized in place.
+Existing separate files (`StatsView.swift`, `MilestoneView.swift`) are modernized in place. `StatsSectionView` stays co-located in `StatsView.swift` since it's a private helper used only by `StatsView`.
+
+`HideAndSeekApp.swift` keeps the `_ = SoundManager.shared` preload — still needed for audio even after haptics are removed from SoundManager.
 
 ## Section 4: Deprecated API Fixes
 
@@ -123,40 +134,33 @@ Applied during file extraction. Complete list:
 
 | Deprecated | Modern | Occurrences |
 |---|---|---|
-| `foregroundColor(.x)` | `foregroundStyle(.x)` | ~18 across all views |
-| `.cornerRadius(n)` | `.clipShape(.rect(cornerRadius: n))` | ~11 across all views |
+| `foregroundColor(.x)` | `foregroundStyle(.x)` | 31 (12 ContentView, 15 StatsView, 4 MilestoneView) |
+| `.cornerRadius(n)` | `.clipShape(.rect(cornerRadius: n))` | 15 (10 ContentView, 2 StatsView, 3 MilestoneView) |
 | `NavigationView { }` | `NavigationStack { }` | 2: StatsView, SettingsSheetView |
 | `.navigationBarTrailing` | `.topBarTrailing` | 2: StatsView, SettingsSheetView |
 | `Text("A") + Text("B")` | `Text("\(a)\(b)")` interpolation | 1: HUDView turns display |
-| `Binding(get:set:)` | Direct `@Bindable` bindings with `onChange` | 6: SettingsSheetView sliders/toggles |
+| `Binding(get:set:)` for Toggle | Direct `$viewModel.settings.soundEnabled` | 1: SettingsSheetView Toggle |
+| `Binding(get:set:)` for Sliders | Keep as-is (Int↔Double conversion) | 5: SettingsSheetView Sliders |
 
 ### SettingsSheetView Binding Migration
 
-The 6 `Binding(get:set:)` instances in SettingsSheetView exist because `GameSettings` is a struct inside `GameViewModel`. With `@Observable` + `@Bindable`, these become direct bindings:
+Of the 6 `Binding(get:set:)` instances in SettingsSheetView:
 
-```swift
-// Before
-Slider(value: Binding(
-    get: { Double(viewModel.settings.startingTurns) },
-    set: { viewModel.settings.startingTurns = Int($0) }
-), in: 5...30, step: 1)
-
-// After — bind to a Double @State and sync via onChange
-// Or keep the Binding(get:set:) for Int↔Double conversion only
-// (Binding(get:set:) is acceptable for type conversion, just not for side effects)
-```
-
-Note: `Binding(get:set:)` for Int↔Double type conversion in Sliders is acceptable — the swiftui-pro rule targets bindings used for side effects. These conversions can stay.
+- **1 Toggle** (`soundEnabled`): This is a direct Bool↔Bool passthrough and should be replaced with `$viewModel.settings.soundEnabled` via `@Bindable`.
+- **5 Sliders** (startingTurns, trapCount, coinCount, compassCount, soundVolume): These perform Int↔Double or Float↔Double conversion. `Binding(get:set:)` for pure type conversion is acceptable per swiftui-pro rules — these stay as-is.
 
 ## Section 5: Accessibility
 
 ### Dynamic Type
 
-Replace all hardcoded `.font(.system(size:))` with semantic fonts:
+Replace all 26 hardcoded `.font(.system(size:))` instances with semantic fonts:
 
 | Current | Replacement | Usage |
 |---------|-------------|-------|
+| `.system(size: 80)` | `.system(size: 80)` | Trophy emoji (keep — decorative, not text) |
+| `.system(size: 36, weight: .heavy)` | `.largeTitle.weight(.heavy)` | Milestone win count |
 | `.system(size: 32, weight: .bold)` | `.largeTitle.bold()` | App title |
+| `.system(size: 28, weight: .bold)` | `.title.bold()` | Milestone heading |
 | `.system(size: 24, weight: .bold)` | `.title2.bold()` | Win/loss headings, tile emoji |
 | `.system(size: 20, weight: .bold)` | `.title3.bold()` | HUD turns |
 | `.system(size: 18, weight: .bold)` | `.headline` | Buttons, feedback |
@@ -191,22 +195,26 @@ Split concerns:
 - **`SoundManager`** keeps audio playback only. Remove all `UIImpactFeedbackGenerator`/`UINotificationFeedbackGenerator` code and the `UIKit` import.
 - **Haptics** move to the view layer via `.sensoryFeedback()` modifiers on `TileButton` and `ContentView`, triggered by `viewModel.lastRevealedContent` and `viewModel.isGameOver` changes.
 
+The trigger uses `revealCount` (an incrementing Int) so haptics fire even for consecutive same-content tiles:
+
 ```swift
-// On TileButton or GridView:
-.sensoryFeedback(.impact(flexibility: .soft), trigger: viewModel.lastRevealedContent) { old, new in
-    new == .empty || new == .compass
+// On GridView or ContentView:
+.sensoryFeedback(.impact(flexibility: .soft), trigger: viewModel.revealCount) { _, _ in
+    viewModel.lastRevealedContent == .empty || viewModel.lastRevealedContent == .compass
 }
-.sensoryFeedback(.impact(flexibility: .solid), trigger: viewModel.lastRevealedContent) { old, new in
-    new == .coin
+.sensoryFeedback(.impact(flexibility: .solid), trigger: viewModel.revealCount) { _, _ in
+    viewModel.lastRevealedContent == .coin
 }
-.sensoryFeedback(.success, trigger: viewModel.lastRevealedContent) { old, new in
-    new == .friend
+.sensoryFeedback(.success, trigger: viewModel.revealCount) { _, _ in
+    viewModel.lastRevealedContent == .friend
 }
-.sensoryFeedback(.error, trigger: viewModel.lastRevealedContent) { old, new in
-    new == .trap
+.sensoryFeedback(.error, trigger: viewModel.revealCount) { _, _ in
+    viewModel.lastRevealedContent == .trap
 }
 .sensoryFeedback(.error, trigger: viewModel.isGameOver)
 ```
+
+Note: The game-over haptic is intentionally simplified to a single `.error` feedback. The original 5-pulse UIKit haptic loop over 1 second cannot be replicated with `sensoryFeedback()`. This is an acceptable trade-off for full SwiftUI-native haptics.
 
 ### Concurrency
 
