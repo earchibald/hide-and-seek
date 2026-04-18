@@ -26,6 +26,12 @@
 		AA0004 /* GameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0004 /* GameSettings.swift */; };
 		AA0005 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0005 /* GameViewModel.swift */; };
 		AA0006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB0006 /* Assets.xcassets */; };
+		HS0101 /* CloudStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS0001 /* CloudStore.swift */; };
+		HS0102 /* StatsMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS0002 /* StatsMerge.swift */; };
+		HS0103 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS0003 /* SettingsStore.swift */; };
+		HS0104 /* StatsMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS0004 /* StatsMergeTests.swift */; };
+		HS0105 /* CloudSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS0005 /* CloudSyncTests.swift */; };
+		HS0106 /* MockCloudStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = HS0006 /* MockCloudStore.swift */; };
 		TT0001 /* TileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0002 /* TileTests.swift */; };
 		TT0040 /* MockSoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0041 /* MockSoundManager.swift */; };
 		TT0042 /* MockStatsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = TT0043 /* MockStatsTracker.swift */; };
@@ -74,6 +80,13 @@
 		BB0005 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		BB0006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CC0001 /* HideAndSeek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HideAndSeek.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		HS0001 /* CloudStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudStore.swift; sourceTree = "<group>"; };
+		HS0002 /* StatsMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsMerge.swift; sourceTree = "<group>"; };
+		HS0003 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		HS0004 /* StatsMergeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsMergeTests.swift; sourceTree = "<group>"; };
+		HS0005 /* CloudSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncTests.swift; sourceTree = "<group>"; };
+		HS0006 /* MockCloudStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCloudStore.swift; sourceTree = "<group>"; };
+		HS0007 /* HideAndSeek.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HideAndSeek.entitlements; sourceTree = "<group>"; };
 		TT0002 /* TileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileTests.swift; sourceTree = "<group>"; };
 		TT0003 /* HideAndSeekTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HideAndSeekTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		TT0041 /* MockSoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSoundManager.swift; sourceTree = "<group>"; };
@@ -117,6 +130,9 @@
 				0A12F38B2F428058007A0625 /* SoundManager.swift */,
 				0A12F38F2F428059007A0625 /* StatsTracking.swift */,
 				0A76F2C72F42A39100F56EC0 /* StatsManager.swift */,
+				HS0001 /* CloudStore.swift */,
+				HS0002 /* StatsMerge.swift */,
+				HS0003 /* SettingsStore.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -153,6 +169,7 @@
 				EE0006 /* Views */,
 				BB0006 /* Assets.xcassets */,
 				0A76F2BD2F429AA500F56EC0 /* Sounds */,
+				HS0007 /* HideAndSeek.entitlements */,
 			);
 			path = HideAndSeek;
 			sourceTree = "<group>";
@@ -211,6 +228,8 @@
 				TT0047 /* GameStatsTests.swift */,
 				TT0049 /* StatsManagerTests.swift */,
 				TT0051 /* GameViewModelTests.swift */,
+				HS0004 /* StatsMergeTests.swift */,
+				HS0005 /* CloudSyncTests.swift */,
 			);
 			path = HideAndSeekTests;
 			sourceTree = "<group>";
@@ -220,6 +239,7 @@
 			children = (
 				TT0041 /* MockSoundManager.swift */,
 				TT0043 /* MockStatsTracker.swift */,
+				HS0006 /* MockCloudStore.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -341,6 +361,9 @@
 				0A12F3902F428059007A0625 /* SoundPlaying.swift in Sources */,
 				0A12F3912F428059007A0625 /* StatsTracking.swift in Sources */,
 				0A76F2C82F42A39100F56EC0 /* StatsManager.swift in Sources */,
+				HS0101 /* CloudStore.swift in Sources */,
+				HS0102 /* StatsMerge.swift in Sources */,
+				HS0103 /* SettingsStore.swift in Sources */,
 				VV0001 /* HUDView.swift in Sources */,
 				VV0002 /* GridView.swift in Sources */,
 				VV0003 /* TileButton.swift in Sources */,
@@ -363,6 +386,9 @@
 				TT0046 /* GameStatsTests.swift in Sources */,
 				TT0048 /* StatsManagerTests.swift in Sources */,
 				TT0052 /* GameViewModelTests.swift in Sources */,
+				HS0104 /* StatsMergeTests.swift in Sources */,
+				HS0105 /* CloudSyncTests.swift in Sources */,
+				HS0106 /* MockCloudStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,6 +526,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HideAndSeek/HideAndSeek.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -516,7 +543,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hideandseek.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.earchibald-hideandseek.app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.2;
@@ -529,6 +556,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HideAndSeek/HideAndSeek.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -545,7 +573,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hideandseek.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.earchibald-hideandseek.app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.2;

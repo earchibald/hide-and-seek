@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GameSettings {
+struct GameSettings: Codable, Equatable {
     var startingTurns: Int = 15
     var trapCount: Int = 10
     var coinCount: Int = 10

@@ -11,6 +11,7 @@ import Foundation
     static let shared = StatsManager()
 
     private let defaults: UserDefaults
+    private let cloud: CloudStoring
     private let userDefaultsKey = "hideAndSeek.playerStats"
     private let maxHistorySize = 100
     private let milestones = [10, 25, 50, 100, 500]
@@ -18,17 +19,31 @@ import Foundation
     private var stats: GameStats
 
     private convenience init() {
-        self.init(defaults: .standard)
+        self.init(defaults: .standard, cloud: CloudStore.shared)
     }
 
-    init(defaults: UserDefaults) {
+    init(defaults: UserDefaults, cloud: CloudStoring = NoOpCloudStore()) {
         self.defaults = defaults
+        self.cloud = cloud
+
+        let local: GameStats
         if let data = defaults.data(forKey: userDefaultsKey),
            let decoded = try? JSONDecoder().decode(GameStats.self, from: data) {
-            self.stats = decoded
+            local = decoded
         } else {
-            self.stats = GameStats()
-            saveStats()
+            local = GameStats()
+        }
+
+        if let remote = cloud.load(GameStats.self, forKey: CloudKeys.stats) {
+            self.stats = StatsMerge.merge(local: local, remote: remote, historyLimit: maxHistorySize)
+        } else {
+            self.stats = local
+        }
+        persist()
+
+        cloud.addExternalChangeObserver { [weak self] keys in
+            guard let self, keys.contains(CloudKeys.stats) else { return }
+            self.mergeRemote()
         }
     }
 
@@ -36,43 +51,36 @@ import Foundation
     func recordGame(won: Bool, turnsRemaining: Int) {
         let result = GameResult(won: won, turnsRemaining: turnsRemaining, date: Date())
 
-        // Add to history (keep last 100)
         stats.gameHistory.append(result)
         if stats.gameHistory.count > maxHistorySize {
             stats.gameHistory.removeFirst()
         }
 
-        // Update lifetime stats
         if won {
             stats.lifetimeWins += 1
             stats.currentStreak += 1
-            // Update best streak if current is better
             stats.bestStreak = max(stats.bestStreak, stats.currentStreak)
         } else {
             stats.lifetimeLosses += 1
             stats.currentStreak = 0
         }
 
-        saveStats()
+        persist()
     }
 
     /// Check if a milestone was just reached (returns milestone number if new)
     func checkMilestone() -> Int? {
         let wins = stats.lifetimeWins
 
-        // Find highest milestone reached
         var reachedMilestone: Int? = nil
-        for milestone in milestones {
-            if wins >= milestone {
-                reachedMilestone = milestone
-            }
+        for milestone in milestones where wins >= milestone {
+            reachedMilestone = milestone
         }
 
-        // Only return if it's a NEW milestone
         if let milestone = reachedMilestone {
             if stats.lastMilestone == nil || milestone > stats.lastMilestone! {
                 stats.lastMilestone = milestone
-                saveStats()
+                persist()
                 return milestone
             }
         }
@@ -102,17 +110,11 @@ import Foundation
         let losses = recentGames.count - wins
         let winRate = recentGames.count > 0 ? Double(wins) / Double(recentGames.count) * 100 : 0
 
-        // Calculate current streak from recent games
         var currentStreak = 0
         for game in recentGames.reversed() {
-            if game.won {
-                currentStreak += 1
-            } else {
-                break
-            }
+            if game.won { currentStreak += 1 } else { break }
         }
 
-        // Calculate best streak in this window
         var bestStreak = 0
         var tempStreak = 0
         for game in recentGames {
@@ -147,11 +149,33 @@ import Foundation
     /// Clear all statistics
     func clearStats() {
         stats = GameStats()
-        saveStats()
+        persist()
     }
 
-    /// Save stats to UserDefaults
-    private func saveStats() {
+    /// One-shot restore from a previous install. Overwrites lifetime counters
+    /// and streaks; leaves `gameHistory` empty (the last-10/last-100 windows
+    /// will refill naturally).
+    func restore(wins: Int, losses: Int, currentStreak: Int, bestStreak: Int, lastMilestone: Int?) {
+        var new = GameStats()
+        new.lifetimeWins = wins
+        new.lifetimeLosses = losses
+        new.currentStreak = currentStreak
+        new.bestStreak = bestStreak
+        new.lastMilestone = lastMilestone
+        stats = new
+        persist()
+    }
+
+    private func persist() {
+        if let encoded = try? JSONEncoder().encode(stats) {
+            defaults.set(encoded, forKey: userDefaultsKey)
+        }
+        cloud.save(stats, forKey: CloudKeys.stats)
+    }
+
+    private func mergeRemote() {
+        guard let remote = cloud.load(GameStats.self, forKey: CloudKeys.stats) else { return }
+        stats = StatsMerge.merge(local: stats, remote: remote, historyLimit: maxHistorySize)
         if let encoded = try? JSONEncoder().encode(stats) {
             defaults.set(encoded, forKey: userDefaultsKey)
         }

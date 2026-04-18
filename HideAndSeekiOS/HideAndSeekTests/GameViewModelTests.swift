@@ -11,7 +11,7 @@ struct GameViewModelTests {
     init() {
         mockSound = MockSoundManager()
         mockStats = MockStatsTracker()
-        vm = GameViewModel(soundManager: mockSound, statsTracker: mockStats)
+        vm = GameViewModel(soundManager: mockSound, statsTracker: mockStats, settingsStore: nil)
     }
 
     // MARK: - Helpers

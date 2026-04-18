@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents a single game result
-struct GameResult: Codable {
+struct GameResult: Codable, Hashable {
     let won: Bool
     let turnsRemaining: Int
     let date: Date

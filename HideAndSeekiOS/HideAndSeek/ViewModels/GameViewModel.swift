@@ -30,8 +30,14 @@ struct FeedbackMessage: Identifiable {
 
     let soundManager: SoundPlaying
     let statsTracker: StatsTracking
+    private let settingsStore: SettingsStore?
 
-    var settings = GameSettings()
+    var settings: GameSettings {
+        didSet {
+            guard settings != oldValue else { return }
+            settingsStore?.update(settings)
+        }
+    }
     var board: [[Tile]] = []
     var turns: Int = 15
     var gameStatus: GameStatus = .playing
@@ -45,11 +51,17 @@ struct FeedbackMessage: Identifiable {
     var isGameOver = false
     
     init(soundManager: SoundPlaying = SoundManager.shared,
-         statsTracker: StatsTracking = StatsManager.shared) {
+         statsTracker: StatsTracking = StatsManager.shared,
+         settingsStore: SettingsStore? = SettingsStore()) {
         self.soundManager = soundManager
         self.statsTracker = statsTracker
+        self.settingsStore = settingsStore
+        self.settings = settingsStore?.settings ?? GameSettings()
         generateBoard()
         turns = settings.startingTurns
+        settingsStore?.onRemoteChange = { [weak self] new in
+            self?.settings = new
+        }
     }
     
     func generateBoard() {
