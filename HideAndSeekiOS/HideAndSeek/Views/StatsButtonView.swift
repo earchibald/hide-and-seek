@@ -16,7 +16,7 @@ struct StatsButtonView: View {
                 viewModel.showStats.toggle()
             }) {
                 HStack {
-                    Text("📊 Player Stats")
+                    Text("📊 Stats")
                         .font(.subheadline.bold())
                     Spacer()
                     Text(viewModel.showStats ? "▼" : "▶")
