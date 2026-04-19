@@ -12,6 +12,24 @@ enum TerrainType: String, CaseIterable {
     case trees = "🌲"
     case rocks = "🪨"
     case pond = "💧"
+
+    var variants: [String] {
+        switch self {
+        case .grass: ["🌿", "🌾", "☘️", "🍀"]
+        case .trees: ["🌲", "🌳", "🌴", "🎋"]
+        case .rocks: ["🪨", "⛰️", "🗿"]
+        case .pond: ["💧", "🌊", "🪷"]
+        }
+    }
+
+    var accessibilityName: String {
+        switch self {
+        case .grass: "grass"
+        case .trees: "tree"
+        case .rocks: "rocks"
+        case .pond: "water"
+        }
+    }
 }
 
 enum ContentType: String {
@@ -27,8 +45,18 @@ struct Tile: Identifiable {
     let row: Int
     let col: Int
     var terrain: TerrainType
+    var terrainEmoji: String
     var content: ContentType
     var isRevealed: Bool = false
+
+    init(row: Int, col: Int, terrain: TerrainType, content: ContentType, terrainEmoji: String? = nil, isRevealed: Bool = false) {
+        self.row = row
+        self.col = col
+        self.terrain = terrain
+        self.terrainEmoji = terrainEmoji ?? terrain.rawValue
+        self.content = content
+        self.isRevealed = isRevealed
+    }
     
     func contentEmoji(friendPos: Position?) -> String {
         switch content {

@@ -15,7 +15,7 @@ struct TileButton: View {
         Button(action: {
             viewModel.handleTileClick(row: tile.row, col: tile.col)
         }) {
-            Text(tile.isRevealed ? tile.contentEmoji(friendPos: viewModel.friendPos) : tile.terrain.rawValue)
+            Text(tile.isRevealed ? tile.contentEmoji(friendPos: viewModel.friendPos) : tile.terrainEmoji)
                 .font(.title2.bold())
                 .frame(width: 35, height: 35)
                 .background(tile.isRevealed ? Color(red: 0.2, green: 0.45, blue: 0.2).opacity(0.7) : Color(red: 0.25, green: 0.5, blue: 0.25))
@@ -36,7 +36,7 @@ struct TileButton: View {
             case .compass: "Compass pointing \(tile.contentEmoji(friendPos: viewModel.friendPos))"
             }
         } else {
-            "\(tile.terrain.rawValue) terrain, row \(tile.row + 1), column \(tile.col + 1)"
+            "\(tile.terrain.accessibilityName) terrain, row \(tile.row + 1), column \(tile.col + 1)"
         }
     }
 }

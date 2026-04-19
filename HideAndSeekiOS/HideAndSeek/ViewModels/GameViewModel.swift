@@ -86,7 +86,8 @@ struct FeedbackMessage: Identifiable {
                     }
                 }
                 
-                let tile = Tile(row: row, col: col, terrain: terrain, content: .empty)
+                let emoji = terrain.variants.randomElement() ?? terrain.rawValue
+                let tile = Tile(row: row, col: col, terrain: terrain, content: .empty, terrainEmoji: emoji)
                 boardRow.append(tile)
             }
             newBoard.append(boardRow)
