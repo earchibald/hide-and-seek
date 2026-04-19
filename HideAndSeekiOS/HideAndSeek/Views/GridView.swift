@@ -24,15 +24,31 @@ struct GridView: View {
         .background(Color(red: 0.15, green: 0.4, blue: 0.15))
         .clipShape(.rect(cornerRadius: 10))
         .shadow(radius: 5)
-        .opacity(viewModel.gameStatus == .lost ? 0.5 : 1.0)
+        .opacity(boardOpacity)
         .animation(.easeInOut(duration: 0.3), value: viewModel.gameStatus)
         .contentShape(.rect)
         .onTapGesture {
-            if viewModel.gameStatus == .lost {
+            if viewModel.gameStatus == .lost || viewModel.gameStatus == .won {
                 viewModel.resetGame()
             }
         }
         .accessibilityLabel("Game board")
-        .accessibilityHint(viewModel.gameStatus == .lost ? "Tap to try again" : "")
+        .accessibilityHint(accessibilityHint)
+    }
+
+    private var boardOpacity: Double {
+        switch viewModel.gameStatus {
+        case .lost: return 0.5
+        case .won: return 0.7
+        case .playing: return 1.0
+        }
+    }
+
+    private var accessibilityHint: String {
+        switch viewModel.gameStatus {
+        case .lost: return "Tap to try again"
+        case .won: return "Tap to play again"
+        case .playing: return ""
+        }
     }
 }

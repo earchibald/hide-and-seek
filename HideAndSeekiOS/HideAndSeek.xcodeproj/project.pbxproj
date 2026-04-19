@@ -42,7 +42,6 @@
 		VV0001 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0011 /* HUDView.swift */; };
 		VV0002 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0012 /* GridView.swift */; };
 		VV0003 /* TileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0013 /* TileButton.swift */; };
-		VV0004 /* WinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0014 /* WinView.swift */; };
 		VV0006 /* StatsButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0016 /* StatsButtonView.swift */; };
 		VV0007 /* SettingsToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0017 /* SettingsToggleView.swift */; };
 		VV0008 /* SettingsSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = VV0018 /* SettingsSheetView.swift */; };
@@ -97,7 +96,6 @@
 		VV0011 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
 		VV0012 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		VV0013 /* TileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileButton.swift; sourceTree = "<group>"; };
-		VV0014 /* WinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinView.swift; sourceTree = "<group>"; };
 		VV0016 /* StatsButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsButtonView.swift; sourceTree = "<group>"; };
 		VV0017 /* SettingsToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToggleView.swift; sourceTree = "<group>"; };
 		VV0018 /* SettingsSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheetView.swift; sourceTree = "<group>"; };
@@ -211,7 +209,6 @@
 				VV0016 /* StatsButtonView.swift */,
 				0A76F2CA2F42A3A200F56EC0 /* StatsView.swift */,
 				VV0013 /* TileButton.swift */,
-				VV0014 /* WinView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -364,7 +361,6 @@
 				VV0001 /* HUDView.swift in Sources */,
 				VV0002 /* GridView.swift in Sources */,
 				VV0003 /* TileButton.swift in Sources */,
-				VV0004 /* WinView.swift in Sources */,
 				VV0006 /* StatsButtonView.swift in Sources */,
 				VV0007 /* SettingsToggleView.swift in Sources */,
 				VV0008 /* SettingsSheetView.swift in Sources */,
