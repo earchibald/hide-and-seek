@@ -11,57 +11,61 @@ struct ContentView: View {
     @State private var viewModel = GameViewModel()
 
     var body: some View {
-        ZStack {
-            Color(red: 0.13, green: 0.35, blue: 0.13) // Dark green background
-                .ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack(alignment: .top) {
+                Color(red: 0.13, green: 0.35, blue: 0.13)
 
-            VStack(spacing: 16) {
-                // Header
-                VStack(spacing: 8) {
-                    Text("🌲 Hide & Seek 🌲")
-                        .font(.largeTitle.bold())
-                        .foregroundStyle(.white)
+                VStack(spacing: 16) {
+                    // Header
+                    VStack(spacing: 8) {
+                        Text("🌲 Hide & Seek 🌲")
+                            .font(.title.bold())
+                            .foregroundStyle(.white)
 
-                    Text("Find your friend in the wilderness!")
-                        .font(.caption)
-                        .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
+                        Text("Find your friend in the wilderness!")
+                            .font(.caption)
+                            .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
+                    }
+                    .padding(.top, 8)
+
+                    // HUD
+                    HUDView(viewModel: viewModel)
+
+                    // Win/Loss overlays
+                    if viewModel.gameStatus == .won {
+                        WinView(viewModel: viewModel)
+                    }
+
+                    if viewModel.gameStatus == .lost {
+                        LoseView(viewModel: viewModel)
+                    }
+
+                    // Grid
+                    GridView(viewModel: viewModel)
+
+                    // Stats Button
+                    StatsButtonView(viewModel: viewModel)
+
+                    // Settings Toggle
+                    SettingsToggleView(viewModel: viewModel)
+
+                    // Instructions
+                    VStack(spacing: 4) {
+                        Text("Tap tiles to search for your friend 🕵️‍♀️")
+                            .font(.caption2)
+                        Text("All taps cost 1 turn • Coins 💰: 0 net • Traps 🕸️: -2 • Compass: -1 + hint")
+                            .font(.caption2)
+                    }
+                    .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
+                    .padding(.bottom, 10)
+
+                    Spacer(minLength: 0)
                 }
-                .padding(.top, 20)
-
-                // HUD
-                HUDView(viewModel: viewModel)
-
-                // Win/Loss overlays
-                if viewModel.gameStatus == .won {
-                    WinView(viewModel: viewModel)
-                }
-
-                if viewModel.gameStatus == .lost {
-                    LoseView(viewModel: viewModel)
-                }
-
-                // Grid
-                GridView(viewModel: viewModel)
-
-                // Stats Button
-                StatsButtonView(viewModel: viewModel)
-
-                // Settings Toggle
-                SettingsToggleView(viewModel: viewModel)
-
-                // Instructions
-                VStack(spacing: 4) {
-                    Text("Tap tiles to search for your friend 🕵️‍♀️")
-                        .font(.caption2)
-                    Text("All taps cost 1 turn • Coins 💰: 0 net • Traps 🕸️: -2 • Compass: -1 + hint")
-                        .font(.caption2)
-                }
-                .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
-                .padding(.bottom, 10)
-
-                Spacer()
+                .padding(.horizontal, 8)
+                .padding(.top, geometry.safeAreaInsets.top)
+                .padding(.bottom, geometry.safeAreaInsets.bottom)
             }
-            .padding(.horizontal, 8)
+            .ignoresSafeArea()
         }
         .sheet(isPresented: $viewModel.showSettings) {
             SettingsSheetView(viewModel: viewModel)
