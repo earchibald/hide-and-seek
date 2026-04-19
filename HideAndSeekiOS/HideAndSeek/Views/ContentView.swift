@@ -11,61 +11,60 @@ struct ContentView: View {
     @State private var viewModel = GameViewModel()
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .top) {
-                Color(red: 0.13, green: 0.35, blue: 0.13)
+        ZStack(alignment: .top) {
+            Color(red: 0.13, green: 0.35, blue: 0.13)
+                .ignoresSafeArea()
 
-                VStack(spacing: 16) {
-                    // Header
-                    VStack(spacing: 8) {
-                        Text("🌲 Hide & Seek 🌲")
-                            .font(.title.bold())
-                            .foregroundStyle(.white)
+            VStack(spacing: 16) {
+                // Header
+                VStack(spacing: 8) {
+                    Text("🌲 Hide & Seek 🌲")
+                        .font(.title.bold())
+                        .foregroundStyle(.white)
 
-                        Text("Find your friend in the wilderness!")
-                            .font(.caption)
-                            .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
-                    }
-                    .padding(.top, 8)
-
-                    // HUD
-                    HUDView(viewModel: viewModel)
-
-                    // Win/Loss overlays
-                    if viewModel.gameStatus == .won {
-                        WinView(viewModel: viewModel)
-                    }
-
-                    if viewModel.gameStatus == .lost {
-                        LoseView(viewModel: viewModel)
-                    }
-
-                    // Grid
-                    GridView(viewModel: viewModel)
-
-                    // Stats Button
-                    StatsButtonView(viewModel: viewModel)
-
-                    // Settings Toggle
-                    SettingsToggleView(viewModel: viewModel)
-
-                    // Instructions
-                    VStack(spacing: 4) {
-                        Text("Tap tiles to search for your friend 🕵️‍♀️")
-                            .font(.caption2)
-                        Text("All taps cost 1 turn • Coins 💰: 0 net • Traps 🕸️: -2 • Compass: -1 + hint")
-                            .font(.caption2)
-                    }
-                    .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
-                    .padding(.bottom, 10)
-
-                    Spacer(minLength: 0)
+                    Text("Find your friend in the wilderness!")
+                        .font(.caption)
+                        .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
                 }
-                .padding(.horizontal, 8)
-                .padding(.top, geometry.safeAreaInsets.top)
-                .padding(.bottom, geometry.safeAreaInsets.bottom)
+                .padding(.top, 8)
+
+                // HUD
+                HUDView(viewModel: viewModel)
+
+                // Win/Loss overlays
+                if viewModel.gameStatus == .won {
+                    WinView(viewModel: viewModel)
+                }
+
+                if viewModel.gameStatus == .lost {
+                    LoseView(viewModel: viewModel)
+                }
+
+                // Grid
+                GridView(viewModel: viewModel)
+
+                Spacer(minLength: 0)
+
+                // Instructions
+                VStack(spacing: 4) {
+                    Text("Tap tiles to search for your friend 🕵️‍♀️")
+                        .font(.caption2)
+                    Text("All taps cost 1 turn • Coins 💰: 0 net • Traps 🕸️: -2 • Compass: -1 + hint")
+                        .font(.caption2)
+                }
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .foregroundStyle(Color(red: 0.7, green: 0.9, blue: 0.7))
+
+                // Stats + Settings (half-width row)
+                HStack(spacing: 12) {
+                    StatsButtonView(viewModel: viewModel)
+                        .frame(maxWidth: .infinity)
+                    SettingsToggleView(viewModel: viewModel)
+                        .frame(maxWidth: .infinity)
+                }
             }
-            .ignoresSafeArea()
+            .padding(.horizontal, 8)
         }
         .sheet(isPresented: $viewModel.showSettings) {
             SettingsSheetView(viewModel: viewModel)

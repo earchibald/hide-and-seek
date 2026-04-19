@@ -16,7 +16,7 @@ struct SettingsToggleView: View {
                 viewModel.showSettings.toggle()
             }) {
                 HStack {
-                    Text("⚙️ Settings / Debug")
+                    Text("⚙️ Settings")
                         .font(.subheadline.bold())
                     Spacer()
                     Text(viewModel.showSettings ? "▼" : "▶")
