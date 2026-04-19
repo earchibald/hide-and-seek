@@ -31,13 +31,9 @@ struct ContentView: View {
                 // HUD
                 HUDView(viewModel: viewModel)
 
-                // Win/Loss overlays
+                // Win overlay (loss is handled via HUDView + dimmed grid)
                 if viewModel.gameStatus == .won {
                     WinView(viewModel: viewModel)
-                }
-
-                if viewModel.gameStatus == .lost {
-                    LoseView(viewModel: viewModel)
                 }
 
                 // Grid

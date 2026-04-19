@@ -13,9 +13,15 @@ struct HUDView: View {
     var body: some View {
         VStack(spacing: 12) {
             HStack {
-                Text("Turns: \(viewModel.turns)")
-                    .font(.title3.bold())
-                    .foregroundStyle(viewModel.turns <= 3 ? .red : .white)
+                if viewModel.gameStatus == .lost {
+                    Text("💔 You Lost")
+                        .font(.title3.bold())
+                        .foregroundStyle(.red)
+                } else {
+                    Text("Turns: \(viewModel.turns)")
+                        .font(.title3.bold())
+                        .foregroundStyle(viewModel.turns <= 3 ? .red : .white)
+                }
 
                 Spacer()
             }
@@ -23,7 +29,11 @@ struct HUDView: View {
 
             // Fixed height feedback area
             Group {
-                if let feedback = viewModel.feedback {
+                if viewModel.gameStatus == .lost {
+                    Text("Tap board to try again")
+                        .font(.headline)
+                        .foregroundStyle(Color(red: 0.9, green: 0.9, blue: 0.9))
+                } else if let feedback = viewModel.feedback {
                     Text(feedback.message)
                         .font(.headline)
                         .foregroundStyle(feedback.color)
